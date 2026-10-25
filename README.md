@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # LinkedIn Career Networking Assistant
 
 > A secure, compliant, AI-powered career discovery and networking platform designed for AI/ML engineers, Python developers, mentors, alumni, and recruiters.
@@ -170,3 +171,6 @@ The project is a standard Single Page Application (SPA) ready for free hosting:
 
 ## License
 MIT License. Compliant with LinkedIn User Agreement and Terms of Service.
+=======
+# linkedin-career-networking-assistant
+>>>>>>> e0581722e5ddadbd8bb55a5637c091a38d95285d
