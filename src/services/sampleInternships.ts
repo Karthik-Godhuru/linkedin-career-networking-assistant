@@ -1,0 +1,48 @@
+import type { InternshipRawInput } from '../types/internship'
+
+export const SAMPLE_INTERNSHIPS: InternshipRawInput[] = [
+  {
+    title: 'Machine Learning Engineering Intern',
+    company: 'Google',
+    location: 'Mountain View, CA (Hybrid / Remote Option)',
+    work_mode: 'hybrid',
+    posting_url: 'https://careers.google.com/jobs/results/sample-step-ml-intern',
+    source: 'sample_dataset',
+    required_skills: ['Python', 'TensorFlow', 'PyTorch', 'Data Structures', 'Machine Learning'],
+    deadline: '2026-11-15',
+    notes: 'Campus recruiting program focusing on core ML infrastructure, model evaluation, and scalable pipelines. Verified official employer program.',
+  },
+  {
+    title: 'AI Research & Open-Source Fellow',
+    company: 'Hugging Face',
+    location: 'Remote (Global)',
+    work_mode: 'remote',
+    posting_url: 'https://huggingface.co/careers/sample-ai-fellowship-2026',
+    source: 'sample_dataset',
+    required_skills: ['Python', 'Transformers', 'PyTorch', 'NLP', 'Git'],
+    deadline: '2026-11-05',
+    notes: 'Fully remote research fellowship contributing to open-source foundation models, tokenizers, and dataset tooling.',
+  },
+  {
+    title: 'Software Development Engineer Intern (AI/Cloud)',
+    company: 'Amazon',
+    location: 'Seattle, WA',
+    work_mode: 'onsite',
+    posting_url: 'https://amazon.jobs/en/jobs/sample-sde-intern-2026',
+    source: 'sample_dataset',
+    required_skills: ['Python', 'Java', 'Algorithms', 'Distributed Systems', 'AWS'],
+    deadline: '2026-10-31',
+    notes: 'High-visibility technical internship building backend microservices and predictive data ingestion pipelines.',
+  },
+  {
+    title: 'Applied AI & LLM Systems Intern',
+    company: 'Anthropic',
+    location: 'San Francisco, CA (Hybrid)',
+    work_mode: 'hybrid',
+    posting_url: 'https://jobs.lever.co/anthropic/sample-applied-ai-intern',
+    source: 'sample_dataset',
+    required_skills: ['Python', 'PyTorch', 'Reinforcement Learning', 'Large Language Models'],
+    deadline: '2026-12-01',
+    notes: 'Hands-on development with alignment research, automated evaluation benchmarks, and scalable inference infrastructure.',
+  },
+]
