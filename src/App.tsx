@@ -3,7 +3,7 @@ import { AuthProvider } from './context/AuthContext'
 import { useAuth } from './hooks/useAuth'
 import { Navbar } from './components/layout/Navbar'
 import { AuthCard } from './components/auth/AuthCard'
-import { Loader2, Target, CheckCircle2, Users, MessageSquare, Layers, Briefcase } from 'lucide-react'
+import { Loader2, Target, CheckCircle2, Users, MessageSquare, Layers, Briefcase, Calendar } from 'lucide-react'
 
 // Code-split tab views to enable on-demand chunk loading and eliminate bundle size warning
 const DiscoveryHub = lazy(() =>
@@ -18,6 +18,9 @@ const TrackerHub = lazy(() =>
 const InternshipDiscoveryHub = lazy(() =>
   import('./components/internships/InternshipDiscoveryHub').then((m) => ({ default: m.InternshipDiscoveryHub }))
 )
+const ContentPlannerHub = lazy(() =>
+  import('./components/planner/ContentPlannerHub').then((m) => ({ default: m.ContentPlannerHub }))
+)
 const CareerGoalsForm = lazy(() =>
   import('./components/profile/CareerGoalsForm').then((m) => ({ default: m.CareerGoalsForm }))
 )
@@ -27,7 +30,7 @@ const Milestone1Welcome = lazy(() =>
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth()
-  const [activeTab, setActiveTab] = useState<'discovery' | 'outreach' | 'tracker' | 'internships' | 'preferences' | 'system'>('internships')
+  const [activeTab, setActiveTab] = useState<'discovery' | 'outreach' | 'tracker' | 'internships' | 'planner' | 'preferences' | 'system'>('internships')
   const [outreachCandidateId, setOutreachCandidateId] = useState<string | null>(null)
 
   const handleNavigateToOutreach = (candidateId?: string) => {
@@ -107,6 +110,19 @@ const AppContent: React.FC = () => {
 
               <button
                 type="button"
+                onClick={() => setActiveTab('planner')}
+                className={`inline-flex items-center px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                  activeTab === 'planner'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+                    : 'text-slate-400 hover:text-white bg-slate-900 border border-slate-800'
+                }`}
+              >
+                <Calendar className="w-4 h-4 mr-2 text-indigo-400" />
+                Content Planner
+              </button>
+
+              <button
+                type="button"
                 onClick={() => setActiveTab('preferences')}
                 className={`inline-flex items-center px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                   activeTab === 'preferences'
@@ -157,6 +173,7 @@ const AppContent: React.FC = () => {
                 />
               )}
               {activeTab === 'internships' && <InternshipDiscoveryHub />}
+              {activeTab === 'planner' && <ContentPlannerHub />}
               {activeTab === 'preferences' && <CareerGoalsForm />}
               {activeTab === 'system' && <Milestone1Welcome />}
             </Suspense>

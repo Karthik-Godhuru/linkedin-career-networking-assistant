@@ -260,7 +260,20 @@ export interface Database {
           suggested_hashtags: string[]
           target_audience: string | null
           draft_status: string
+          post_body: string | null
+          source_material: string | null
+          tone: string
+          scheduled_date: string | null
+          slot_number: number
+          published_at: string | null
+          impressions: number
+          reactions: number
+          comments: number
+          reposts: number
+          media_url?: string | null
+          media_description?: string | null
           created_at: string
+          updated_at?: string
         }
         Insert: {
           id?: string
@@ -270,7 +283,20 @@ export interface Database {
           suggested_hashtags?: string[]
           target_audience?: string | null
           draft_status?: string
+          post_body?: string | null
+          source_material?: string | null
+          tone?: string
+          scheduled_date?: string | null
+          slot_number?: number
+          published_at?: string | null
+          impressions?: number
+          reactions?: number
+          comments?: number
+          reposts?: number
+          media_url?: string | null
+          media_description?: string | null
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
@@ -280,6 +306,55 @@ export interface Database {
           suggested_hashtags?: string[]
           target_audience?: string | null
           draft_status?: string
+          post_body?: string | null
+          source_material?: string | null
+          tone?: string
+          scheduled_date?: string | null
+          slot_number?: number
+          published_at?: string | null
+          impressions?: number
+          reactions?: number
+          comments?: number
+          reposts?: number
+          media_url?: string | null
+          media_description?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      post_media_assets: {
+        Row: {
+          id: string
+          user_id: string
+          post_id: string
+          storage_path: string
+          file_name: string
+          mime_type: string
+          file_size: number
+          caption: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          post_id: string
+          storage_path: string
+          file_name: string
+          mime_type: string
+          file_size: number
+          caption?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          post_id?: string
+          storage_path?: string
+          file_name?: string
+          mime_type?: string
+          file_size?: number
+          caption?: string | null
           created_at?: string
         }
         Relationships: []
