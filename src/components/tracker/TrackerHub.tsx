@@ -118,63 +118,77 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
   // Quick Action Handlers
   const handleStageChange = async (candidate: CandidateRecord, newStatus: TrackerStatus) => {
     const current = trackerMap[candidate.id]
-    const updates: Partial<NetworkingTrackerRecord> = { status: newStatus }
+    const patch: Partial<NetworkingTrackerRecord> = { status: newStatus }
 
-    // Auto-stamp dates if transitioning
-    if (newStatus === 'invitation_sent' && !current?.invitation_sent_at) {
-      updates.invitation_sent_at = getNowIsoString()
-      // Suggest +4 days for 1st follow-up per li-dm
-      updates.next_follow_up_date = getFutureDateString(4)
-    } else if (newStatus === 'connected' && !current?.connected_at) {
-      updates.connected_at = getNowIsoString()
-      updates.next_follow_up_date = getFutureDateString(4)
+    if (newStatus === 'invitation_sent' && (!current || !current.invitation_sent_at)) {
+      patch.invitation_sent_at = getNowIsoString()
+      if (!current || !current.next_follow_up_date) {
+        patch.next_follow_up_date = getFutureDateString(4)
+      }
+    } else if (newStatus === 'connected' && (!current || !current.connected_at)) {
+      patch.connected_at = getNowIsoString()
+      if (!current || !current.next_follow_up_date) {
+        patch.next_follow_up_date = getFutureDateString(4)
+      }
+    } else if (newStatus === 'conversation_active') {
+      patch.next_follow_up_date = getFutureDateString(10)
     }
 
-    const res = await updateTracker(candidate.id, updates)
+    const res = await updateTracker(candidate.id, patch)
     if (res.success) {
-      setSuccessBanner(`Updated ${candidate.full_name} to "${STAGE_CONFIGS[newStatus].label}"`)
+      const cfg = STAGE_CONFIGS[newStatus]
+      setSuccessBanner(`Updated ${candidate.full_name} to "${cfg.label}"`)
       setTimeout(() => setSuccessBanner(null), 3000)
     }
   }
 
   const handleSetQuickDate = async (candidateId: string, daysAhead: number) => {
-    const dateStr = getFutureDateString(daysAhead)
-    const res = await updateTracker(candidateId, { next_follow_up_date: dateStr })
+    const nextDate = getFutureDateString(daysAhead)
+    const res = await updateTracker(candidateId, { next_follow_up_date: nextDate })
     if (res.success) {
-      setSuccessBanner(`Follow-up set to ${dateStr} (+${daysAhead} days)`)
+      setSuccessBanner(`Follow-up scheduled for ${nextDate} (+${daysAhead}d)`)
       setTimeout(() => setSuccessBanner(null), 3000)
     }
   }
 
   const handleSaveNotes = async (candidateId: string) => {
-    const res = await updateTracker(candidateId, { notes: notesInput })
+    const res = await updateTracker(candidateId, { notes: notesInput.trim() || null })
     if (res.success) {
       setEditingNotesId(null)
-      setSuccessBanner('Notes updated successfully')
-      setTimeout(() => setSuccessBanner(null), 2500)
+      setNotesInput('')
+      setSuccessBanner('Conversation notes saved!')
+      setTimeout(() => setSuccessBanner(null), 3000)
     }
   }
 
   // Filter items
-  const filteredItems = pipelineItems.filter((item) => {
-    const q = searchTerm.toLowerCase()
-    const matchesSearch =
-      !searchTerm ||
-      item.candidate.full_name.toLowerCase().includes(q) ||
-      (item.candidate.headline || '').toLowerCase().includes(q) ||
-      (item.candidate.current_company || '').toLowerCase().includes(q) ||
-      (item.tracker.notes || '').toLowerCase().includes(q)
+  const filteredItems = pipelineItems.filter(({ candidate, tracker, followUpInfo }) => {
+    if (searchTerm) {
+      const q = searchTerm.toLowerCase()
+      const matchesName = candidate.full_name.toLowerCase().includes(q)
+      const matchesRole = (candidate.headline || '').toLowerCase().includes(q)
+      const matchesCompany = (candidate.current_company || '').toLowerCase().includes(q)
+      const matchesNotes = (tracker.notes || '').toLowerCase().includes(q)
+      if (!matchesName && !matchesRole && !matchesCompany && !matchesNotes) {
+        return false
+      }
+    }
 
-    const matchesStage = filterStage === 'all' || item.tracker.status === filterStage
-    const matchesFollowUp =
-      !filterFollowUpOnly ||
-      item.tracker.status === 'follow_up_due' ||
-      (item.followUpInfo && (item.followUpInfo.isOverdue || item.followUpInfo.isDueToday))
+    if (filterFollowUpOnly) {
+      const isDue =
+        tracker.status === 'follow_up_due' ||
+        (followUpInfo && (followUpInfo.isOverdue || followUpInfo.isDueToday))
+      if (!isDue) return false
+    }
 
-    return matchesSearch && matchesStage && matchesFollowUp
+    if (filterStage !== 'all' && tracker.status !== filterStage) {
+      return false
+    }
+
+    return true
   })
 
-  // Urgent Follow-Ups list
+  // Urgent follow-ups requiring today / overdue action
   const urgentFollowUps = pipelineItems.filter(
     (item) => item.followUpInfo && (item.followUpInfo.isOverdue || item.followUpInfo.isDueToday)
   )
@@ -183,79 +197,79 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
 
   return (
     <div className="space-y-6 text-left max-w-5xl mx-auto">
-      {/* Top Banner with Pipeline Metrics */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      {/* Header Banner - Editorial Warmth with Dark Feature Metrics */}
+      <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-2xl p-6 sm:p-8 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-950/80 border border-blue-800 text-blue-300 text-xs font-medium mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Milestone 6 &bull; Networking Pipeline & Follow-Up Studio</span>
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#1C1B19] text-[#C6A76B] border border-[#C6A76B]/30 text-[10px] font-semibold uppercase tracking-wider mb-2.5 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-[#C6A76B]" />
+              <span>Networking Pipeline &amp; Spacing Engine</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-              Networking Pipeline & Follow-Up Reminders
+            <h2 className="text-xl sm:text-2xl font-light text-[#292722] tracking-tight">
+              Networking Pipeline Tracker
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl">
-              Track candidates from invitation to accepted connection and meaningful conversation. Maintain spaced follow-ups without automated bot sequences.
+            <p className="text-xs sm:text-sm text-[#73685B] mt-1 max-w-xl font-normal leading-relaxed">
+              Track 7 pipeline stages from invite to established relationship. In-app follow-up reminders enforce +4d and +10d spacing to build authentic rapport.
             </p>
           </div>
 
-          {/* Pipeline Metric Cards */}
+          {/* Pipeline Metric Cards - Dark Graphite Feature Panel */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 shrink-0">
-            <div className="bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5">
-              <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="bg-[#1C1B19] border border-[#514435] rounded-xl px-4 py-3 shadow-xs">
+              <div className="flex items-center justify-between text-xs text-[#FAF7F2]/60">
                 <span>In Pipeline</span>
-                <Users className="w-3.5 h-3.5 text-blue-400" />
+                <Users className="w-3.5 h-3.5 text-[#C6A76B]" />
               </div>
-              <div className="text-lg font-bold text-white font-mono mt-0.5">{totalInPipeline}</div>
+              <div className="text-xl font-bold text-[#FAF7F2] font-mono mt-1">{totalInPipeline}</div>
             </div>
 
-            <div className="bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5">
-              <div className="flex items-center justify-between text-xs text-slate-400">
-                <span>Sent (Pending)</span>
-                <Send className="w-3.5 h-3.5 text-amber-400" />
+            <div className="bg-[#1C1B19] border border-[#514435] rounded-xl px-4 py-3 shadow-xs">
+              <div className="flex items-center justify-between text-xs text-[#FAF7F2]/60">
+                <span>Sent</span>
+                <Send className="w-3.5 h-3.5 text-[#C6A76B]" />
               </div>
-              <div className="text-lg font-bold text-amber-300 font-mono mt-0.5">{sentCount}</div>
+              <div className="text-xl font-bold text-[#C6A76B] font-mono mt-1">{sentCount}</div>
             </div>
 
-            <div className="bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5">
-              <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="bg-[#1C1B19] border border-[#514435] rounded-xl px-4 py-3 shadow-xs">
+              <div className="flex items-center justify-between text-xs text-[#FAF7F2]/60">
                 <span>Connected</span>
-                <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <UserCheck className="w-3.5 h-3.5 text-[#2E5A36]" />
               </div>
-              <div className="text-lg font-bold text-emerald-300 font-mono mt-0.5">{connectedCount}</div>
+              <div className="text-xl font-bold text-[#FAF7F2] font-mono mt-1">{connectedCount}</div>
             </div>
 
-            <div className="bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5">
-              <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="bg-[#1C1B19] border border-[#514435] rounded-xl px-4 py-3 shadow-xs">
+              <div className="flex items-center justify-between text-xs text-[#FAF7F2]/60">
                 <span>Follow-Ups Due</span>
-                <Clock className="w-3.5 h-3.5 text-rose-400" />
+                <Clock className="w-3.5 h-3.5 text-[#942F2F]" />
               </div>
-              <div className="text-lg font-bold text-rose-300 font-mono mt-0.5">{followUpsDueCount}</div>
+              <div className="text-xl font-bold text-[#942F2F] font-mono mt-1">{followUpsDueCount}</div>
             </div>
           </div>
         </div>
 
         {/* Notifications Guidance Alert */}
-        <div className="mt-4 p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex items-start space-x-3 text-slate-300 text-xs">
-          <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+        <div className="mt-4 p-3.5 rounded-md bg-[#FAF7F2] border border-[#D9CFC2] flex items-start space-x-3 text-[#73685B] text-xs">
+          <Info className="w-4 h-4 text-[#B49A7D] shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-semibold text-white">In-App Follow-Up Reminder Notice:</span>
-            <p className="text-slate-400 leading-relaxed">
+            <span className="font-semibold text-[#292722]">In-App Follow-Up Reminder Notice:</span>
+            <p className="text-[#73685B] leading-relaxed">
               Follow-up reminders are tracked in-app and rendered live on this dashboard. No background OS notifications or emails are dispatched when the application is closed.
             </p>
           </div>
         </div>
 
         {successBanner && (
-          <div className="mt-4 p-3.5 rounded-xl bg-emerald-950/70 border border-emerald-800/80 flex items-center space-x-3 text-emerald-200 text-xs sm:text-sm animate-in fade-in">
-            <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="mt-4 p-3.5 rounded-md bg-[#EAF2EC] border border-[#C6DEC9] flex items-center space-x-3 text-[#2E5A36] text-xs sm:text-sm">
+            <Check className="w-4 h-4 text-[#2E5A36] shrink-0" />
             <span>{successBanner}</span>
           </div>
         )}
 
         {error && (
-          <div className="mt-4 p-3.5 rounded-xl bg-red-950/70 border border-red-800/80 flex items-center space-x-3 text-red-200 text-xs sm:text-sm">
-            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+          <div className="mt-4 p-3.5 rounded-md bg-[#FCEEEE] border border-[#F0C4C4] flex items-center space-x-3 text-[#942F2F] text-xs sm:text-sm">
+            <AlertCircle className="w-4 h-4 text-[#942F2F] shrink-0" />
             <span>{error}</span>
           </div>
         )}
@@ -263,16 +277,16 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
 
       {/* Urgent In-App Follow-Up Action Box */}
       {urgentFollowUps.length > 0 && (
-        <div className="bg-rose-950/40 border border-rose-800/60 rounded-2xl p-5 space-y-3">
+        <div className="bg-[#FBF4E8] border border-[#E8D5B5] rounded-lg p-5 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <CalendarClock className="w-4 h-4 text-rose-400" />
-              <h3 className="text-sm font-bold text-rose-200 tracking-tight">
+              <CalendarClock className="w-4 h-4 text-[#8A5A20]" />
+              <h3 className="text-sm font-semibold text-[#8A5A20] tracking-tight">
                 Follow-Ups Due for Action ({urgentFollowUps.length})
               </h3>
             </div>
-            <span className="text-[11px] font-mono text-rose-300">
-              Spaced continuity per <code className="bg-rose-950/90 px-1 py-0.5 rounded">li-dm</code>
+            <span className="text-[11px] font-mono text-[#73685B]">
+              Spaced continuity per <code className="bg-[#FAF7F2] border border-[#E8D5B5] px-1 py-0.5 rounded text-[#8A5A20]">li-dm</code>
             </span>
           </div>
 
@@ -280,34 +294,34 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
             {urgentFollowUps.map(({ candidate, followUpInfo }) => (
               <div
                 key={candidate.id}
-                className="bg-slate-900/90 border border-rose-900/50 rounded-xl p-3.5 flex flex-col justify-between space-y-2"
+                className="bg-[#FAF7F2] border border-[#E8D5B5] rounded-md p-3.5 flex flex-col justify-between space-y-2"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
-                    <span className="font-semibold text-white text-xs truncate">
+                    <span className="font-semibold text-[#292722] text-xs truncate">
                       {candidate.full_name}
                     </span>
                     <span
                       className={`shrink-0 text-[10px] font-mono font-semibold px-2 py-0.5 rounded ${
                         followUpInfo?.isOverdue
-                          ? 'bg-rose-950 text-rose-300 border border-rose-800'
-                          : 'bg-amber-950 text-amber-300 border border-amber-800'
+                          ? 'bg-[#FCEEEE] text-[#942F2F] border border-[#F0C4C4]'
+                          : 'bg-[#FBF4E8] text-[#8A5A20] border border-[#E8D5B5]'
                       }`}
                     >
                       {followUpInfo?.isOverdue ? `Overdue by ${Math.abs(followUpInfo.days)}d` : 'Due Today'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                  <p className="text-[11px] text-[#73685B] truncate mt-0.5">
                     {candidate.current_company || candidate.headline}
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                <div className="flex items-center justify-between pt-2 border-t border-[#D9CFC2]">
                   {onNavigateToOutreach && (
                     <button
                       type="button"
                       onClick={() => onNavigateToOutreach(candidate.id)}
-                      className="text-xs text-blue-400 hover:text-blue-300 font-medium inline-flex items-center"
+                      className="text-xs text-[#292722] hover:text-[#B49A7D] font-medium inline-flex items-center"
                     >
                       <MessageSquare className="w-3 h-3 mr-1" />
                       View Draft #2
@@ -317,7 +331,7 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                   <button
                     type="button"
                     onClick={() => handleStageChange(candidate, 'conversation_active')}
-                    className="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded-lg"
+                    className="text-[11px] bg-[#E8DFD3] hover:bg-[#D9CFC2] text-[#292722] px-2 py-1 rounded"
                   >
                     Mark Replied
                   </button>
@@ -331,17 +345,17 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
       {/* Main Pipeline Station & Filter Header */}
       <div className="space-y-4">
         {/* Stage Filter Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-2 border-b border-slate-800 pb-3">
+        <div className="flex flex-wrap items-center gap-1.5 border-b border-[#D9CFC2] pb-3">
           <button
             type="button"
             onClick={() => {
               setFilterStage('all')
               setFilterFollowUpOnly(false)
             }}
-            className={`inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            className={`inline-flex items-center px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
               filterStage === 'all' && !filterFollowUpOnly
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                ? 'bg-[#292722] text-[#FAF7F2]'
+                : 'bg-[#FAF7F2] border border-[#D9CFC2] text-[#73685B] hover:text-[#292722]'
             }`}
           >
             All Pipeline ({totalInPipeline})
@@ -353,10 +367,10 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
               setFilterStage('ready_to_send')
               setFilterFollowUpOnly(false)
             }}
-            className={`inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            className={`inline-flex items-center px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
               filterStage === 'ready_to_send'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                ? 'bg-[#292722] text-[#FAF7F2]'
+                : 'bg-[#FAF7F2] border border-[#D9CFC2] text-[#73685B] hover:text-[#292722]'
             }`}
           >
             Approved ({pipelineItems.filter((i) => i.tracker.status === 'ready_to_send').length})
@@ -368,10 +382,10 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
               setFilterStage('invitation_sent')
               setFilterFollowUpOnly(false)
             }}
-            className={`inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            className={`inline-flex items-center px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
               filterStage === 'invitation_sent'
-                ? 'bg-amber-600 text-white shadow-sm'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                ? 'bg-[#292722] text-[#FAF7F2]'
+                : 'bg-[#FAF7F2] border border-[#D9CFC2] text-[#73685B] hover:text-[#292722]'
             }`}
           >
             Invite Sent ({sentCount})
@@ -383,10 +397,10 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
               setFilterStage('connected')
               setFilterFollowUpOnly(false)
             }}
-            className={`inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            className={`inline-flex items-center px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
               filterStage === 'connected'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                ? 'bg-[#292722] text-[#FAF7F2]'
+                : 'bg-[#FAF7F2] border border-[#D9CFC2] text-[#73685B] hover:text-[#292722]'
             }`}
           >
             Connected ({connectedCount})
@@ -398,10 +412,10 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
               setFilterStage('conversation_active')
               setFilterFollowUpOnly(false)
             }}
-            className={`inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            className={`inline-flex items-center px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
               filterStage === 'conversation_active'
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                ? 'bg-[#292722] text-[#FAF7F2]'
+                : 'bg-[#FAF7F2] border border-[#D9CFC2] text-[#73685B] hover:text-[#292722]'
             }`}
           >
             Active Chat ({repliesCount})
@@ -413,10 +427,10 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
               setFilterFollowUpOnly(true)
               setFilterStage('all')
             }}
-            className={`inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            className={`inline-flex items-center px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
               filterFollowUpOnly
-                ? 'bg-rose-600 text-white shadow-sm'
-                : 'bg-slate-900 border border-slate-800 text-rose-300 hover:text-white'
+                ? 'bg-[#292722] text-[#FAF7F2]'
+                : 'bg-[#FAF7F2] border border-[#D9CFC2] text-[#942F2F] hover:text-[#292722]'
             }`}
           >
             <Clock className="w-3.5 h-3.5 mr-1.5" />
@@ -426,44 +440,44 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
 
         {/* Search Bar */}
         <div className="relative">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-[#73685B] absolute left-3 top-2.5" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search candidate, role, company or notes..."
-            className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            className="w-full pl-9 pr-3 py-2 bg-[#FAF7F2] border border-[#D9CFC2] rounded-md text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D]"
           />
         </div>
 
         {/* Pipeline List */}
         {isLoading ? (
-          <div className="p-12 text-center bg-slate-900/60 border border-slate-800 rounded-2xl">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto mb-2" />
-            <p className="text-xs text-slate-400">Loading networking pipeline...</p>
+          <div className="p-12 text-center bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg">
+            <Loader2 className="w-6 h-6 animate-spin text-[#292722] mx-auto mb-2" />
+            <p className="text-xs uppercase tracking-wider text-[#73685B]">Loading networking pipeline...</p>
           </div>
         ) : approvedCandidates.length === 0 ? (
-          <div className="p-12 text-center bg-slate-900/60 border border-slate-800 rounded-2xl space-y-4">
-            <Users className="w-12 h-12 text-slate-600 mx-auto" />
-            <h3 className="text-base font-semibold text-white">Your pipeline is empty</h3>
-            <p className="text-xs text-slate-400 max-w-md mx-auto">
-              Candidates must be reviewed and approved in Candidate Curation (M4) to enter the Networking Pipeline.
+          <div className="p-12 text-center bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg space-y-4">
+            <Users className="w-10 h-10 text-[#B49A7D] mx-auto" />
+            <h3 className="text-sm font-semibold text-[#292722]">Your pipeline is empty</h3>
+            <p className="text-xs text-[#73685B] max-w-md mx-auto leading-relaxed">
+              Candidates must be reviewed and approved in Candidate Curation to enter the Networking Pipeline.
             </p>
             {onNavigateToCuration && (
               <button
                 type="button"
                 onClick={onNavigateToCuration}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-sm transition-all"
+                className="inline-flex items-center px-4 py-2 bg-[#292722] hover:bg-[#3D3A33] text-[#FAF7F2] text-xs font-medium rounded-md transition-colors"
               >
-                Go to Candidate Curation (M4)
+                Go to Candidate Curation
               </button>
             )}
           </div>
         ) : filteredItems.length === 0 ? (
-          <div className="p-12 text-center bg-slate-900/60 border border-slate-800 rounded-2xl space-y-2">
-            <Filter className="w-10 h-10 text-slate-600 mx-auto" />
-            <h4 className="text-sm font-semibold text-white">No candidates in this view</h4>
-            <p className="text-xs text-slate-400">Try switching your stage filter or clearing your search.</p>
+          <div className="p-12 text-center bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg space-y-2">
+            <Filter className="w-8 h-8 text-[#B49A7D] mx-auto" />
+            <h4 className="text-sm font-semibold text-[#292722]">No candidates in this view</h4>
+            <p className="text-xs text-[#73685B]">Try switching your stage filter or clearing your search.</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -475,26 +489,26 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
               return (
                 <div
                   key={candidate.id}
-                  className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all space-y-4"
+                  className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg p-5 hover:border-[#B49A7D] transition-colors space-y-4"
                 >
                   {/* Top Candidate & Stage Row */}
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h4 className="text-base font-bold text-white tracking-tight">
+                        <h4 className="text-base font-semibold text-[#292722] tracking-tight">
                           {candidate.full_name}
                         </h4>
-                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${currentStage.badgeColor}`}>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded border bg-[#E8DFD3] text-[#292722] border-[#D9CFC2]">
                           {currentStage.label}
                         </span>
                         {followUpInfo && (
                           <span
-                            className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold ${
+                            className={`text-[10px] font-mono px-2 py-0.5 rounded font-medium ${
                               followUpInfo.isOverdue
-                                ? 'bg-rose-950 text-rose-300 border border-rose-800'
+                                ? 'bg-[#FCEEEE] text-[#942F2F] border border-[#F0C4C4]'
                                 : followUpInfo.isDueToday
-                                ? 'bg-amber-950 text-amber-300 border border-amber-800'
-                                : 'bg-slate-950 text-slate-400 border border-slate-800'
+                                ? 'bg-[#FBF4E8] text-[#8A5A20] border border-[#E8D5B5]'
+                                : 'bg-[#E8DFD3] text-[#73685B] border border-[#D9CFC2]'
                             }`}
                           >
                             {followUpInfo.isOverdue
@@ -506,16 +520,16 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                         )}
                       </div>
 
-                      <p className="text-xs text-slate-300 line-clamp-1">{candidate.headline}</p>
+                      <p className="text-xs text-[#73685B] line-clamp-1">{candidate.headline}</p>
 
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 pt-0.5">
+                      <div className="flex flex-wrap items-center gap-3 text-xs text-[#73685B] pt-0.5">
                         {candidate.current_company && (
                           <span className="flex items-center">
-                            <Building2 className="w-3 h-3 mr-1 text-slate-500" />
+                            <Building2 className="w-3 h-3 mr-1 text-[#B49A7D]" />
                             {candidate.current_company}
                           </span>
                         )}
-                        <span className="text-[11px] font-mono text-slate-500">
+                        <span className="text-[11px] font-mono text-[#73685B]">
                           Match: {candidate.match_score}%
                         </span>
                       </div>
@@ -527,9 +541,9 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                         <button
                           type="button"
                           onClick={() => onNavigateToOutreach(candidate.id)}
-                          className="inline-flex items-center px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-blue-400 hover:text-blue-300 text-xs font-medium border border-slate-700 transition-colors"
+                          className="inline-flex items-center px-3 py-1.5 rounded-md bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#292722] text-xs font-medium border border-[#D9CFC2] transition-colors"
                         >
-                          <MessageSquare className="w-3.5 h-3.5 mr-1" />
+                          <MessageSquare className="w-3.5 h-3.5 mr-1 text-[#B49A7D]" />
                           <span>Outreach Drafts</span>
                         </button>
                       )}
@@ -538,7 +552,7 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                         href={candidate.profile_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium border border-slate-700 transition-colors"
+                        className="inline-flex items-center px-3 py-1.5 rounded-md bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#292722] text-xs font-medium border border-[#D9CFC2] transition-colors"
                         title="Open profile on LinkedIn safely in a new tab"
                       >
                         <span>Profile</span>
@@ -548,8 +562,8 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                   </div>
 
                   {/* Stage Progress Bar / Quick Stage Selectors */}
-                  <div className="pt-2 border-t border-slate-800/80 space-y-2">
-                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+                  <div className="pt-2 border-t border-[#D9CFC2] space-y-2">
+                    <span className="text-[11px] font-semibold text-[#73685B] uppercase tracking-wider block">
                       Pipeline Stage:
                     </span>
                     <div className="flex flex-wrap gap-1.5">
@@ -572,10 +586,10 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                             type="button"
                             disabled={isUpdatingThis}
                             onClick={() => handleStageChange(candidate, stageKey)}
-                            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                            className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                               isCurrent
-                                ? 'bg-blue-600 text-white shadow-sm'
-                                : 'bg-slate-950 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800'
+                                ? 'bg-[#292722] text-[#FAF7F2]'
+                                : 'bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#73685B] hover:text-[#292722] border border-[#D9CFC2]'
                             } disabled:opacity-50`}
                           >
                             {cfg.label}
@@ -586,13 +600,13 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                   </div>
 
                   {/* Date Logging & Spaced Follow-Up Controller */}
-                  <div className="pt-2 border-t border-slate-800/80 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div className="pt-2 border-t border-[#D9CFC2] grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     {/* Dates Logged */}
-                    <div className="space-y-1.5 text-slate-400">
+                    <div className="space-y-1.5 text-[#73685B]">
                       <div className="flex items-center space-x-2">
-                        <Send className="w-3 h-3 text-slate-500" />
+                        <Send className="w-3 h-3 text-[#B49A7D]" />
                         <span>Invitation Sent:</span>
-                        <strong className="text-white font-mono">
+                        <strong className="text-[#292722] font-mono">
                           {tracker.invitation_sent_at
                             ? new Date(tracker.invitation_sent_at).toLocaleDateString()
                             : 'Not yet recorded'}
@@ -600,9 +614,9 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                       </div>
 
                       <div className="flex items-center space-x-2">
-                        <CheckCircle2 className="w-3 h-3 text-slate-500" />
+                        <CheckCircle2 className="w-3 h-3 text-[#2E5A36]" />
                         <span>Connected At:</span>
-                        <strong className="text-white font-mono">
+                        <strong className="text-[#292722] font-mono">
                           {tracker.connected_at
                             ? new Date(tracker.connected_at).toLocaleDateString()
                             : 'Not yet connected'}
@@ -613,12 +627,12 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                     {/* Next Follow-Up Controller */}
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <label className="text-slate-400 flex items-center">
-                          <Calendar className="w-3 h-3 mr-1 text-slate-500" />
+                        <label className="text-[#73685B] flex items-center">
+                          <Calendar className="w-3 h-3 mr-1 text-[#B49A7D]" />
                           Next Follow-Up Due:
                         </label>
                         {tracker.next_follow_up_date && (
-                          <span className="font-mono text-white text-[11px]">
+                          <span className="font-mono text-[#292722] text-[11px]">
                             {tracker.next_follow_up_date}
                           </span>
                         )}
@@ -631,15 +645,15 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                           onChange={(e) =>
                             updateTracker(candidate.id, { next_follow_up_date: e.target.value || null })
                           }
-                          className="px-2.5 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+                          className="px-2.5 py-1 bg-[#FAF7F2] border border-[#D9CFC2] rounded-md text-xs text-[#292722] focus:outline-none focus:border-[#B49A7D] font-mono"
                         />
 
                         {/* Quick Spacing Buttons per li-dm */}
                         <button
                           type="button"
                           onClick={() => handleSetQuickDate(candidate.id, 4)}
-                          className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-mono"
-                          title="Set follow-up in +4 days (First follow-up per li-dm)"
+                          className="px-2 py-1 bg-[#E8DFD3] hover:bg-[#D9CFC2] text-[#292722] rounded text-[11px] font-mono transition-colors"
+                          title="Set follow-up in +4 days"
                         >
                           +4d
                         </button>
@@ -647,8 +661,8 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                         <button
                           type="button"
                           onClick={() => handleSetQuickDate(candidate.id, 10)}
-                          className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-mono"
-                          title="Set follow-up in +10 days (Close the loop per li-dm)"
+                          className="px-2 py-1 bg-[#E8DFD3] hover:bg-[#D9CFC2] text-[#292722] rounded text-[11px] font-mono transition-colors"
+                          title="Set follow-up in +10 days"
                         >
                           +10d
                         </button>
@@ -657,9 +671,9 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                   </div>
 
                   {/* Notes Section */}
-                  <div className="pt-2 border-t border-slate-800/80 space-y-1.5">
+                  <div className="pt-2 border-t border-[#D9CFC2] space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider flex items-center">
+                      <span className="text-[11px] font-semibold text-[#73685B] uppercase tracking-wider flex items-center">
                         <FileText className="w-3 h-3 mr-1" />
                         Conversation Notes:
                       </span>
@@ -670,7 +684,7 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                             setEditingNotesId(candidate.id)
                             setNotesInput(tracker.notes || '')
                           }}
-                          className="text-[11px] text-blue-400 hover:underline"
+                          className="text-[11px] text-[#292722] hover:text-[#B49A7D] hover:underline font-medium"
                         >
                           {tracker.notes ? 'Edit Notes' : '+ Add Note'}
                         </button>
@@ -684,31 +698,31 @@ export const TrackerHub: React.FC<TrackerHubProps> = ({
                           value={notesInput}
                           onChange={(e) => setNotesInput(e.target.value)}
                           placeholder="e.g. Chatting about PyTorch inference; promised to share GitHub benchmark..."
-                          className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-blue-500"
+                          className="w-full p-2.5 bg-[#FAF7F2] border border-[#D9CFC2] rounded-md text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D]"
                         />
                         <div className="flex justify-end space-x-2">
                           <button
                             type="button"
                             onClick={() => setEditingNotesId(null)}
-                            className="px-2.5 py-1 bg-slate-800 text-slate-300 text-xs rounded-lg"
+                            className="px-2.5 py-1 bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#73685B] text-xs rounded-md border border-[#D9CFC2]"
                           >
                             Cancel
                           </button>
                           <button
                             type="button"
                             onClick={() => handleSaveNotes(candidate.id)}
-                            className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg"
+                            className="px-3 py-1 bg-[#292722] hover:bg-[#3D3A33] text-[#FAF7F2] text-xs font-medium rounded-md"
                           >
                             Save Note
                           </button>
                         </div>
                       </div>
                     ) : tracker.notes ? (
-                      <p className="text-xs text-slate-300 bg-slate-950 p-2.5 rounded-xl border border-slate-800/60 leading-relaxed font-sans">
+                      <p className="text-xs text-[#292722] bg-[#FAF7F2] p-2.5 rounded-md border border-[#D9CFC2] leading-relaxed">
                         {tracker.notes}
                       </p>
                     ) : (
-                      <span className="text-[11px] text-slate-500 italic block">
+                      <span className="text-[11px] text-[#73685B] italic block">
                         No conversation notes recorded yet.
                       </span>
                     )}

@@ -102,8 +102,8 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Experience Level Selector */}
       <div className="space-y-2">
-        <label className="block text-xs font-semibold text-slate-200">
-          Experience Level / Stage <span className="text-blue-400">*</span>
+        <label className="block text-xs font-semibold text-[#292722]">
+          Experience Level / Stage <span className="text-[#8A5A20]">*</span>
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
           {ExperienceLevelEnum.options.map((level) => {
@@ -113,13 +113,15 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
                 key={level}
                 type="button"
                 onClick={() => updateField('experience_level', level as ExperienceLevel)}
-                className={`p-3 rounded-xl border text-left transition-all ${
+                className={`p-3.5 rounded-xl border text-left transition-all ${
                   isSelected
-                    ? 'bg-blue-950/80 border-blue-600 text-white shadow-sm ring-1 ring-blue-500'
-                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                    ? 'bg-[#1C1B19] border-[#C6A76B]/50 text-[#FAF7F2] shadow-sm'
+                    : 'bg-[#FAF7F2] border-[#D9CFC2] text-[#73685B] hover:text-[#292722] hover:bg-[#E8DFD3]'
                 }`}
               >
-                <div className="text-xs font-medium">{experienceLevelLabels[level]}</div>
+                <div className={`text-xs font-semibold ${isSelected ? 'text-[#C6A76B]' : 'text-[#292722]'}`}>
+                  {experienceLevelLabels[level]}
+                </div>
               </button>
             )
           })}
@@ -128,9 +130,9 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
 
       {/* Target Roles */}
       <div className="pt-2">
-        <div className="flex items-center space-x-2 text-slate-300 mb-1">
-          <Briefcase className="w-4 h-4 text-blue-400" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Target Roles</span>
+        <div className="flex items-center space-x-2 text-[#73685B] mb-1">
+          <Briefcase className="w-3.5 h-3.5 text-[#B49A7D]" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#73685B]">Target Roles</span>
         </div>
         <TagInput
           label="Target Roles & Titles"
@@ -146,9 +148,9 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
 
       {/* Target Skills */}
       <div className="pt-2">
-        <div className="flex items-center space-x-2 text-slate-300 mb-1">
-          <Cpu className="w-4 h-4 text-indigo-400" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Core Technologies</span>
+        <div className="flex items-center space-x-2 text-[#73685B] mb-1">
+          <Cpu className="w-3.5 h-3.5 text-[#B49A7D]" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#73685B]">Core Technologies</span>
         </div>
         <TagInput
           label="Technical Skills & Frameworks"
@@ -164,9 +166,9 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
 
       {/* Target Companies */}
       <div className="pt-2">
-        <div className="flex items-center space-x-2 text-slate-300 mb-1">
-          <Building2 className="w-4 h-4 text-emerald-400" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Target Companies</span>
+        <div className="flex items-center space-x-2 text-[#73685B] mb-1">
+          <Building2 className="w-3.5 h-3.5 text-[#B49A7D]" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#73685B]">Target Companies</span>
         </div>
         <TagInput
           label="Target Companies, Labs & Startups"
@@ -182,9 +184,9 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
 
       {/* Preferred Locations */}
       <div className="pt-2">
-        <div className="flex items-center space-x-2 text-slate-300 mb-1">
-          <MapPin className="w-4 h-4 text-amber-400" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Locations</span>
+        <div className="flex items-center space-x-2 text-[#73685B] mb-1">
+          <MapPin className="w-3.5 h-3.5 text-[#B49A7D]" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#73685B]">Locations</span>
         </div>
         <TagInput
           label="Preferred Locations & Remote Work"
@@ -200,9 +202,9 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
 
       {/* Alumni Networks */}
       <div className="pt-2">
-        <div className="flex items-center space-x-2 text-slate-300 mb-1">
-          <GraduationCap className="w-4 h-4 text-purple-400" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Alumni Networks</span>
+        <div className="flex items-center space-x-2 text-[#73685B] mb-1">
+          <GraduationCap className="w-3.5 h-3.5 text-[#B49A7D]" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#73685B]">Alumni Networks</span>
         </div>
         <TagInput
           label="Colleges, Universities & Bootcamps"
@@ -218,14 +220,14 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
       {/* Career Objective / Bio Summary */}
       <div className="pt-2 space-y-2">
         <div className="flex items-center justify-between">
-          <label className="block text-xs font-semibold text-slate-200">
-            Career Goal & Background Summary (Optional)
+          <label className="block text-xs font-semibold text-[#292722]">
+            Career Goal &amp; Background Summary (Optional)
           </label>
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] text-[#73685B] font-mono">
             {(formData.bio_summary || '').length}/800
           </span>
         </div>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-[#73685B] leading-relaxed">
           A concise summary of your current project focus, research interests, and what you are looking for. Used by the AI drafter to add authentic context.
         </p>
         <textarea
@@ -233,23 +235,23 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
           value={formData.bio_summary || ''}
           onChange={(e) => updateField('bio_summary', e.target.value)}
           placeholder="e.g. Final-year B.Tech CSE student specializing in AI/ML. Building production LLM pipelines with PyTorch and React. Actively seeking AI/ML engineering internships for Summer 2027."
-          className="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+          className="w-full p-3 bg-[#FAF7F2] border border-[#D9CFC2] rounded-md text-xs sm:text-sm text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D] focus:ring-1 focus:ring-[#B49A7D] transition-colors"
         />
         {fieldErrors.bio_summary && (
-          <p className="text-[11px] text-red-400">{fieldErrors.bio_summary}</p>
+          <p className="text-[11px] text-[#942F2F]">{fieldErrors.bio_summary}</p>
         )}
       </div>
 
       {/* Action Controls */}
-      <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-800">
-        <div className="flex items-center space-x-3 text-xs text-slate-400">
+      <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#D9CFC2]">
+        <div className="flex items-center space-x-3 text-xs text-[#73685B]">
           {isDirty && (
-            <span className="inline-flex items-center text-amber-400 font-medium">
+            <span className="inline-flex items-center text-[#8A5A20] font-medium">
               &bull; Unsaved changes
             </span>
           )}
           {updatedAt && !isDirty && (
-            <span className="text-slate-500">
+            <span className="text-[#73685B] font-mono text-[11px]">
               Synced: {new Date(updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
           )}
@@ -265,7 +267,7 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
               clearStatus()
             }}
             disabled={saving}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded-xl border border-slate-700 transition-colors disabled:opacity-50"
+            className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2 bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#292722] text-xs font-medium rounded-md border border-[#D9CFC2] transition-colors disabled:opacity-50"
           >
             <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
             Reset
@@ -274,16 +276,16 @@ const CareerGoalsFormInner: React.FC<FormInnerProps> = ({
           <button
             type="submit"
             disabled={saving}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-2.5 bg-[#1C1B19] hover:bg-[#292722] text-[#FAF7F2] border border-[#C6A76B]/40 text-xs sm:text-sm font-semibold rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 mr-2 animate-spin text-[#C6A76B]" />
                 Saving...
               </>
             ) : (
               <>
-                <Save className="w-4 h-4 mr-2" />
+                <Save className="w-4 h-4 mr-2 text-[#C6A76B]" />
                 Save Career Preferences
               </>
             )}
@@ -309,34 +311,34 @@ export const CareerGoalsForm: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-12 text-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto mb-3" />
-        <p className="text-sm text-slate-400">Loading your saved career profile...</p>
+      <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg p-12 text-center">
+        <Loader2 className="w-6 h-6 animate-spin text-[#292722] mx-auto mb-3" />
+        <p className="text-xs uppercase tracking-wider text-[#73685B]">Loading your saved career profile...</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl text-left space-y-8">
+    <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg p-6 sm:p-8 shadow-sm text-left space-y-6">
       {/* Form Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#D9CFC2]">
         <div>
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-950/80 border border-blue-800 text-blue-300 text-xs font-medium mb-2">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Milestone 2 &bull; Career Discovery Criteria</span>
+          <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded bg-[#E8DFD3] border border-[#D9CFC2] text-[#73685B] text-xs font-medium uppercase tracking-wider mb-2">
+            <Sparkles className="w-3 h-3 text-[#B49A7D]" />
+            <span>Career Discovery Criteria</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-            Career Goals & Networking Preferences
+          <h2 className="text-xl sm:text-2xl font-light text-[#292722] tracking-tight">
+            Career Goals &amp; Networking Preferences
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#73685B] mt-1 font-normal leading-relaxed">
             Configure target roles, skills, and criteria to power personalized matching and connection drafting.
           </p>
         </div>
 
         {recordMeta.updated_at && (
           <div className="text-left sm:text-right shrink-0">
-            <span className="text-[11px] text-slate-500 block">Last Synced</span>
-            <span className="text-xs text-slate-300 font-mono">
+            <span className="text-[11px] text-[#73685B] block">Last Synced</span>
+            <span className="text-xs text-[#292722] font-mono">
               {new Date(recordMeta.updated_at).toLocaleString(undefined, {
                 dateStyle: 'medium',
                 timeStyle: 'short',
@@ -348,11 +350,11 @@ export const CareerGoalsForm: React.FC = () => {
 
       {/* Notifications */}
       {saveSuccess && (
-        <div className="p-4 rounded-xl bg-emerald-950/70 border border-emerald-800/80 flex items-center space-x-3 text-emerald-200 text-xs sm:text-sm shadow-sm animate-in fade-in">
-          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+        <div className="p-4 rounded-md bg-[#EAF2EC] border border-[#C6DEC9] flex items-center space-x-3 text-[#2E5A36] text-xs sm:text-sm">
+          <CheckCircle2 className="w-4 h-4 text-[#2E5A36] shrink-0" />
           <div>
             <span className="font-semibold">Preferences saved successfully!</span>
-            <p className="text-emerald-300/80 text-xs mt-0.5">
+            <p className="text-[#2E5A36]/80 text-xs mt-0.5">
               Your career goals are securely stored in your isolated Supabase tenant.
             </p>
           </div>
@@ -360,8 +362,8 @@ export const CareerGoalsForm: React.FC = () => {
       )}
 
       {error && (
-        <div className="p-4 rounded-xl bg-red-950/70 border border-red-800/80 flex items-center space-x-3 text-red-200 text-xs sm:text-sm shadow-sm">
-          <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
+        <div className="p-4 rounded-md bg-[#FCEEEE] border border-[#F0C4C4] flex items-center space-x-3 text-[#942F2F] text-xs sm:text-sm">
+          <AlertCircle className="w-4 h-4 text-[#942F2F] shrink-0" />
           <span>{error}</span>
         </div>
       )}

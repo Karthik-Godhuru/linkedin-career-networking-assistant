@@ -210,26 +210,26 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
   const isOverCharLimit = charCount > 3000
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-3xl my-8 bg-slate-900 border border-slate-700/80 rounded-xl shadow-2xl flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#292722]/60 backdrop-blur-sm overflow-y-auto">
+      <div className="relative w-full max-w-3xl my-8 bg-[#FAF7F2] border border-[#D9CFC2] rounded-2xl shadow-xl flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[#D9CFC2] bg-[#FAF7F2] rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+            <div className="p-2 rounded-xl bg-[#E8DFD3] text-[#73685B]">
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">
+              <h2 className="text-lg font-semibold text-[#292722]">
                 {initialPost ? 'Edit Planned Post' : 'Create & Plan LinkedIn Post'}
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#73685B]">
                 Plan content, generate authentic drafts, and schedule for your weekly slots.
               </p>
             </div>
           </div>
           <button
             onClick={handleCancel}
-            className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+            className="p-1.5 text-[#73685B] hover:text-[#292722] rounded-xl hover:bg-[#E8DFD3] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -238,7 +238,7 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
         {/* Content Body */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
           {error && (
-            <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-center gap-2 text-rose-300 text-sm">
+            <div className="p-3.5 bg-[#FCEEEE] border border-[#F0C4C4] rounded-xl flex items-center gap-2 text-[#942F2F] text-xs font-medium">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -246,28 +246,28 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
 
           {/* Section 1: Inputs & Context */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1 md:col-span-2">
-              <label className="text-xs font-semibold text-slate-300">
-                Post Topic / Core Theme <span className="text-indigo-400">*</span>
+            <div className="space-y-1.5 md:col-span-2">
+              <label className="text-xs font-semibold text-[#292722]">
+                Post Topic / Core Theme <span className="text-[#8A5A20]">*</span>
               </label>
               <input
                 type="text"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="e.g. Asynchronous batching in Python vs synchronous loops"
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500 placeholder-slate-500"
+                className="w-full px-3.5 py-2.5 bg-[#F4EEE6] border border-[#D9CFC2] rounded-xl text-xs sm:text-sm text-[#292722] focus:outline-none focus:border-[#292722] placeholder-[#73685B]/60"
                 required
               />
             </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#292722]">
                 Content Tone
               </label>
               <select
                 value={tone}
                 onChange={(e) => setTone(e.target.value as ContentTone)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500"
+                className="w-full px-3.5 py-2.5 bg-[#F4EEE6] border border-[#D9CFC2] rounded-xl text-xs sm:text-sm text-[#292722] focus:outline-none focus:border-[#292722]"
               >
                 {TONE_OPTIONS.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -275,19 +275,19 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
                   </option>
                 ))}
               </select>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-[#73685B]">
                 {TONE_OPTIONS.find((t) => t.id === tone)?.description}
               </p>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#292722]">
                 Status
               </label>
               <select
                 value={draftStatus}
                 onChange={(e) => setDraftStatus(e.target.value as ContentStatus)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500"
+                className="w-full px-3.5 py-2.5 bg-[#F4EEE6] border border-[#D9CFC2] rounded-xl text-xs sm:text-sm text-[#292722] focus:outline-none focus:border-[#292722]"
               >
                 {Object.values(CONTENT_STATUS_CONFIGS).map((s) => (
                   <option key={s.id} value={s.id}>
@@ -297,8 +297,8 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
               </select>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#292722]">
                 Target Audience (Optional)
               </label>
               <input
@@ -306,12 +306,12 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
                 value={targetAudience}
                 onChange={(e) => setTargetAudience(e.target.value)}
                 placeholder="e.g. Senior Backend Engineers, Tech Leads"
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500 placeholder-slate-500"
+                className="w-full px-3.5 py-2.5 bg-[#F4EEE6] border border-[#D9CFC2] rounded-xl text-xs sm:text-sm text-[#292722] focus:outline-none focus:border-[#292722] placeholder-[#73685B]/60"
               />
             </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#292722]">
                 Scheduled Slot Date
               </label>
               <div className="relative">
@@ -319,19 +319,19 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
                   type="date"
                   value={scheduledDate}
                   onChange={(e) => setScheduledDate(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2.5 bg-[#F4EEE6] border border-[#D9CFC2] rounded-xl text-xs sm:text-sm text-[#292722] focus:outline-none focus:border-[#292722]"
                 />
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#292722]">
                 Weekly Slot
               </label>
               <select
                 value={slotNumber}
                 onChange={(e) => setSlotNumber(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500"
+                className="w-full px-3.5 py-2.5 bg-[#F4EEE6] border border-[#D9CFC2] rounded-xl text-xs sm:text-sm text-[#292722] focus:outline-none focus:border-[#292722]"
               >
                 <option value={1}>Slot 1 (Tuesday morning)</option>
                 <option value={2}>Slot 2 (Thursday morning)</option>
@@ -340,12 +340,12 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
           </div>
 
           {/* Section 2: Source Material & Raw Notes */}
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-[#292722]">
                 Source Material / Project Notes / Benchmark Findings (Optional)
               </label>
-              <span className="text-[11px] text-slate-400">
+              <span className="text-[11px] text-[#73685B]">
                 Paste code snippets, numbers, or pull request summary
               </span>
             </div>
@@ -354,44 +354,44 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
               value={sourceMaterial}
               onChange={(e) => setSourceMaterial(e.target.value)}
               placeholder="e.g. Cut throughput latency by 35% on batch inference by switching from synchronous JSON parsing to orjson. Tested on AWS g5.2xlarge with 10k requests."
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500 placeholder-slate-500"
+              className="w-full px-3.5 py-2.5 bg-[#F4EEE6] border border-[#D9CFC2] rounded-xl text-xs sm:text-sm text-[#292722] focus:outline-none focus:border-[#292722] placeholder-[#73685B]/60"
             />
           </div>
 
           {/* Generator trigger button */}
-          <div className="flex items-center justify-between pt-2 pb-1 border-t border-slate-800">
-            <div className="text-xs text-slate-400">
+          <div className="flex items-center justify-between pt-3 pb-1 border-t border-[#D9CFC2]">
+            <div className="text-xs text-[#73685B]">
               Generate a high-signal, anti-slop post draft matching your tone & skills.
             </div>
             <button
               type="button"
               onClick={handleGenerate}
               disabled={isGenerating || !topic.trim()}
-              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all shadow flex items-center gap-2"
+              className="px-4 py-2.5 bg-[#1C1B19] hover:bg-[#292722] border border-[#C6A76B]/40 disabled:opacity-40 text-[#FAF7F2] rounded-xl text-xs font-semibold transition-all shadow-sm flex items-center gap-2"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 text-[#C6A76B]" />
               {isGenerating ? 'Generating...' : 'Generate Draft'}
             </button>
           </div>
 
           {generationNote && (
-            <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-300 text-xs flex items-center gap-2">
-              <Check className="w-4 h-4 flex-shrink-0" />
+            <div className="p-3 bg-[#1C1B19] border border-[#C6A76B]/30 rounded-xl text-[#C6A76B] text-xs flex items-center gap-2 font-medium">
+              <Check className="w-4 h-4 flex-shrink-0 text-[#C6A76B]" />
               <span>{generationNote}</span>
             </div>
           )}
 
-          {/* Section 3: Editable Post Draft Area */}
-          <div className="space-y-1">
+          {/* Section 3: Editable Post Draft Area - Dark Graphite Cinematic Preview */}
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                <span>Post Body (Editable)</span>
-                {copied && <span className="text-emerald-400 text-xs font-normal">Copied to clipboard!</span>}
+              <label className="text-xs font-semibold text-[#292722] flex items-center gap-2">
+                <span>Post Body (Editable Preview)</span>
+                {copied && <span className="text-[#C6A76B] text-xs font-medium">Copied to clipboard!</span>}
               </label>
               <div className="flex items-center gap-3">
                 <span
                   className={`text-xs ${
-                    isOverCharLimit ? 'text-rose-400 font-semibold' : 'text-slate-400'
+                    isOverCharLimit ? 'text-[#942F2F] font-semibold' : 'text-[#73685B]'
                   }`}
                 >
                   {charCount} / 3000 chars
@@ -400,7 +400,7 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                    className="text-xs text-[#9C7B4C] hover:text-[#C6A76B] font-semibold flex items-center gap-1 transition-colors"
                   >
                     <Copy className="w-3.5 h-3.5" />
                     Copy
@@ -413,26 +413,26 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
               value={postBody}
               onChange={(e) => setPostBody(e.target.value)}
               placeholder="Your drafted post text will appear here. You can edit and refine it freely before approving or publishing."
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white font-mono focus:outline-none focus:border-indigo-500 placeholder-slate-500 leading-relaxed"
+              className="w-full px-3.5 py-3 bg-[#1C1B19] border border-[#C6A76B]/40 rounded-xl text-xs sm:text-sm text-[#FAF7F2] font-mono focus:outline-none focus:border-[#C6A76B] placeholder-[#FAF7F2]/40 leading-relaxed shadow-inner"
             />
           </div>
 
           {/* Section 4: Hashtags */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300">
+            <label className="text-xs font-semibold text-[#292722]">
               Suggested Hashtags
             </label>
-            <div className="flex flex-wrap gap-1.5 min-h-[32px] p-2 bg-slate-950 border border-slate-700 rounded-lg">
+            <div className="flex flex-wrap gap-1.5 min-h-[36px] p-2 bg-[#F4EEE6] border border-[#D9CFC2] rounded-xl">
               {hashtags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800 text-xs"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#E8DFD3] text-[#292722] border border-[#D9CFC2] text-xs font-medium"
                 >
                   {tag}
                   <button
                     type="button"
                     onClick={() => handleRemoveHashtag(tag)}
-                    className="hover:text-white"
+                    className="text-[#73685B] hover:text-[#942F2F]"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -444,7 +444,7 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
                 onChange={(e) => setNewHashtagInput(e.target.value)}
                 onKeyDown={handleAddHashtag}
                 placeholder="Type tag & press enter..."
-                className="flex-1 min-w-[120px] bg-transparent border-none text-xs text-white focus:outline-none placeholder-slate-600"
+                className="flex-1 min-w-[120px] bg-transparent border-none text-xs text-[#292722] focus:outline-none placeholder-[#73685B]/60"
               />
             </div>
           </div>
@@ -465,15 +465,15 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
         </form>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-slate-800 bg-slate-900/90">
-          <div className="text-xs text-slate-500">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-[#D9CFC2] bg-[#FAF7F2] rounded-b-2xl">
+          <div className="text-xs text-[#73685B]">
             {profile.target_roles[0] || 'AI Engineer'} • {profile.target_skills.slice(0, 3).join(', ')}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               type="button"
               onClick={handleCancel}
-              className="px-4 py-2 border border-slate-700 hover:bg-slate-800 text-slate-300 rounded-lg text-sm font-medium transition-colors"
+              className="px-4 py-2 border border-[#D9CFC2] hover:bg-[#E8DFD3] text-[#292722] rounded-xl text-xs sm:text-sm font-semibold transition-colors"
             >
               Cancel
             </button>
@@ -481,7 +481,7 @@ export const PostDraftModal: React.FC<PostDraftModalProps> = ({
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting || !topic.trim()}
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors shadow flex items-center gap-2"
+              className="px-5 py-2.5 bg-[#292722] hover:bg-[#3D3A33] disabled:opacity-40 text-[#FAF7F2] rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-sm flex items-center gap-2"
             >
               {isSubmitting ? 'Saving...' : initialPost ? 'Update Post' : 'Save Planned Post'}
             </button>

@@ -74,38 +74,38 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
   }
 
   return (
-    <div className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-4">
+    <div className="p-5 bg-[#F4EEE6] border border-[#D9CFC2] rounded-2xl space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/80">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-[#D9CFC2]">
+        <div className="flex items-center gap-2.5">
+          <div className="p-2 rounded-xl bg-[#E8DFD3] text-[#73685B]">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-xs font-semibold text-white uppercase tracking-wider">
+            <h3 className="text-xs font-semibold text-[#292722] uppercase tracking-wider">
               Visual Media Studio
             </h3>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-[#73685B]">
               Upload your own project images/videos or find royalty-free stock assets for your LinkedIn post.
             </p>
           </div>
         </div>
 
         {/* Media Mode Tabs */}
-        <div className="flex items-center bg-slate-900 p-0.5 rounded-lg border border-slate-800 self-start sm:self-auto flex-wrap">
+        <div className="flex items-center bg-[#FAF7F2] p-1 rounded-xl border border-[#D9CFC2] self-start sm:self-auto flex-wrap gap-1">
           <button
             type="button"
             onClick={() => setActiveTab('upload')}
-            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
               activeTab === 'upload'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-[#292722] text-[#FAF7F2] shadow-sm'
+                : 'text-[#73685B] hover:text-[#292722]'
             }`}
           >
             <UploadCloud className="w-3.5 h-3.5" />
             Upload from Device
             {mediaAssets.length > 0 && (
-              <span className="ml-1 px-1.5 py-0.2 rounded-full bg-indigo-950 text-indigo-200 text-[10px] border border-indigo-400/30">
+              <span className="ml-1 px-1.5 py-0.2 rounded-full bg-[#E8DFD3] text-[#292722] text-[10px] font-bold">
                 {mediaAssets.length}
               </span>
             )}
@@ -114,10 +114,10 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('images')}
-            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
               activeTab === 'images'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-[#292722] text-[#FAF7F2] shadow-sm'
+                : 'text-[#73685B] hover:text-[#292722]'
             }`}
           >
             <Image className="w-3.5 h-3.5" />
@@ -127,10 +127,10 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('videos')}
-            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
               activeTab === 'videos'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-[#292722] text-[#FAF7F2] shadow-sm'
+                : 'text-[#73685B] hover:text-[#292722]'
             }`}
           >
             <Video className="w-3.5 h-3.5" />
@@ -156,13 +156,13 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
           <div className="space-y-2.5">
             <div className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                <Search className="w-4 h-4 text-[#73685B] absolute left-3 top-2.5" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search visual concept (e.g. Python code editor, ML diagram)..."
-                  className="w-full pl-9 pr-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full pl-9 pr-3 py-2 bg-[#FAF7F2] border border-[#D9CFC2] rounded-xl text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#292722]"
                 />
               </div>
 
@@ -173,19 +173,19 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
                     <button
                       type="button"
                       onClick={() => handleOpenSearch('pexels')}
-                      className="px-3 py-1.5 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/80 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors shadow-sm"
+                      className="px-3.5 py-2 bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#292722] border border-[#D9CFC2] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
                       title="Search Pexels Photos in a new tab"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <ExternalLink className="w-3.5 h-3.5 text-[#73685B]" />
                       Pexels Photos
                     </button>
                     <button
                       type="button"
                       onClick={() => handleOpenSearch('unsplash')}
-                      className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors shadow-sm"
+                      className="px-3.5 py-2 bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#292722] border border-[#D9CFC2] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
                       title="Search Unsplash Photos in a new tab"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <ExternalLink className="w-3.5 h-3.5 text-[#73685B]" />
                       Unsplash
                     </button>
                   </>
@@ -194,19 +194,19 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
                     <button
                       type="button"
                       onClick={() => handleOpenSearch('youtube')}
-                      className="px-3 py-1.5 bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800/80 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors shadow-sm"
+                      className="px-3.5 py-2 bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#292722] border border-[#D9CFC2] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
                       title="Search YouTube Videos in a new tab"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <ExternalLink className="w-3.5 h-3.5 text-[#73685B]" />
                       YouTube
                     </button>
                     <button
                       type="button"
                       onClick={() => handleOpenSearch('pexels_videos')}
-                      className="px-3 py-1.5 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/80 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors shadow-sm"
+                      className="px-3.5 py-2 bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#292722] border border-[#D9CFC2] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
                       title="Search Pexels Videos in a new tab"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <ExternalLink className="w-3.5 h-3.5 text-[#73685B]" />
                       Pexels Videos
                     </button>
                   </>
@@ -215,8 +215,8 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
             </div>
 
             {/* Suggested Visual Concepts */}
-            <div className="space-y-1">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-semibold text-[#73685B] uppercase tracking-wider block">
                 Suggested Concepts (Click to populate):
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -225,10 +225,10 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
                     key={sug.id}
                     type="button"
                     onClick={() => handleSelectSuggestion(sug.query)}
-                    className={`px-2 py-0.5 rounded text-[11px] font-medium border transition-colors ${
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                       searchQuery === sug.query
-                        ? 'bg-indigo-900/60 text-indigo-300 border-indigo-600'
-                        : 'bg-slate-900/70 text-slate-300 border-slate-800 hover:border-slate-700 hover:text-white'
+                        ? 'bg-[#292722] text-[#FAF7F2] border-[#292722]'
+                        : 'bg-[#FAF7F2] text-[#73685B] border-[#D9CFC2] hover:border-[#73685B] hover:text-[#292722]'
                     }`}
                     title={sug.description}
                   >
@@ -240,28 +240,28 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
           </div>
 
           {/* Licence & Suitability Guidance Toggle */}
-          <div className="p-3 bg-slate-900/80 border border-slate-800/90 rounded-lg space-y-2">
+          <div className="p-4 bg-[#FAF7F2] border border-[#D9CFC2] rounded-xl space-y-2 shadow-sm">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#292722]">
+                <ShieldCheck className="w-4 h-4 text-[#2E5A36]" />
                 <span>Licence & Suitability Guidance</span>
               </div>
               <button
                 type="button"
                 onClick={() => setShowLicenseInfo(!showLicenseInfo)}
-                className="text-[11px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                className="text-[11px] text-[#292722] hover:text-[#73685B] font-semibold flex items-center gap-1 transition-colors"
               >
-                <HelpCircle className="w-3 h-3" />
+                <HelpCircle className="w-3.5 h-3.5 text-[#73685B]" />
                 {showLicenseInfo ? 'Hide Licence Rules' : 'Review Licence Rules'}
               </button>
             </div>
 
-            <p className="text-[11px] text-slate-400 leading-relaxed">
+            <p className="text-[11px] text-[#73685B] leading-relaxed">
               Always verify the licence before downloading or republishing media on LinkedIn. Never share proprietary employer source code, secret API keys in screenshots, or identifiable individuals without their consent.
             </p>
 
             {showLicenseInfo && (
-              <div className="pt-2 border-t border-slate-800 space-y-2">
+              <div className="pt-3 border-t border-[#D9CFC2] space-y-2.5">
                 <div className="flex items-center gap-2 overflow-x-auto pb-1">
                   {(['pexels', 'unsplash', 'youtube', 'pexels_videos'] as MediaProvider[]).map(
                     (p) => (
@@ -269,10 +269,10 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
                         key={p}
                         type="button"
                         onClick={() => setSelectedProviderForInfo(p)}
-                        className={`px-2.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                        className={`px-3 py-1 rounded-lg text-[10px] font-semibold transition-colors ${
                           selectedProviderForInfo === p
-                            ? 'bg-indigo-600 text-white'
-                            : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                            ? 'bg-[#292722] text-[#FAF7F2]'
+                            : 'bg-[#F4EEE6] text-[#73685B] hover:text-[#292722] border border-[#D9CFC2]'
                         }`}
                       >
                         {PROVIDER_LICENSES[p].providerName}
@@ -281,16 +281,16 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
                   )}
                 </div>
 
-                <div className="p-2.5 bg-slate-950 rounded border border-slate-800/80 text-xs text-slate-300 space-y-1.5">
+                <div className="p-3 bg-[#F4EEE6] rounded-xl border border-[#D9CFC2] text-xs text-[#292722] space-y-2">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-semibold text-slate-200">
+                    <span className="font-semibold text-[#292722]">
                       {PROVIDER_LICENSES[selectedProviderForInfo].providerName}
                     </span>
-                    <span className="text-emerald-400 font-mono">
+                    <span className="text-[#2E5A36] font-mono font-semibold">
                       Commercial: {PROVIDER_LICENSES[selectedProviderForInfo].commercialUse}
                     </span>
                   </div>
-                  <ul className="list-disc list-inside text-[11px] text-slate-400 space-y-0.5">
+                  <ul className="list-disc list-inside text-[11px] text-[#73685B] space-y-0.5">
                     {PROVIDER_LICENSES[selectedProviderForInfo].keyRules.map((rule, idx) => (
                       <li key={idx}>{rule}</li>
                     ))}
@@ -300,9 +300,9 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
                       href={PROVIDER_LICENSES[selectedProviderForInfo].officialLicenseUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[10px] text-indigo-400 hover:underline flex items-center gap-1"
+                      className="text-[10px] text-[#292722] hover:text-[#73685B] font-semibold underline flex items-center gap-1"
                     >
-                      <ExternalLink className="w-3 h-3" />
+                      <ExternalLink className="w-3 h-3 text-[#73685B]" />
                       Read official terms
                     </a>
                   </div>
@@ -312,17 +312,17 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
           </div>
 
           {/* Record External Media URL and Description */}
-          <div className="pt-2 border-t border-slate-800/80 space-y-3">
+          <div className="pt-3 border-t border-[#D9CFC2] space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                <Link2 className="w-3.5 h-3.5 text-indigo-400" />
+              <label className="text-xs font-semibold text-[#292722] flex items-center gap-1.5">
+                <Link2 className="w-3.5 h-3.5 text-[#73685B]" />
                 External Media Link / Asset URL (Optional)
               </label>
               {mediaUrl && (
                 <button
                   type="button"
                   onClick={handleTestMediaUrl}
-                  className="text-[11px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                  className="text-[11px] text-[#292722] hover:text-[#73685B] font-semibold flex items-center gap-1"
                 >
                   <ExternalLink className="w-3 h-3" />
                   Open Asset
@@ -335,12 +335,12 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
               value={mediaUrl}
               onChange={(e) => onMediaUrlChange(e.target.value)}
               placeholder="https://www.pexels.com/photo/code-snippet-12345/ or https://youtu.be/..."
-              className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 font-mono"
+              className="w-full px-3.5 py-2 bg-[#FAF7F2] border border-[#D9CFC2] rounded-xl text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#292722] font-mono"
             />
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-indigo-400" />
+              <label className="text-xs font-semibold text-[#292722] flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-[#73685B]" />
                 External Media Description / Alt Text & Attribution Note
               </label>
               <input
@@ -348,12 +348,12 @@ export const VisualMediaFinder: React.FC<VisualMediaFinderProps> = ({
                 value={mediaDescription}
                 onChange={(e) => onMediaDescriptionChange(e.target.value)}
                 placeholder="e.g. Clean screenshot of asynchronous queue benchmark chart (Photo by Jane on Pexels)"
-                className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3.5 py-2 bg-[#FAF7F2] border border-[#D9CFC2] rounded-xl text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#292722]"
               />
             </div>
 
-            <div className="flex items-start gap-2 p-2 bg-slate-900/50 rounded border border-slate-800/60 text-[11px] text-slate-500">
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2 p-3 bg-[#FAF7F2] rounded-xl border border-[#D9CFC2] text-[11px] text-[#73685B]">
+              <AlertTriangle className="w-3.5 h-3.5 text-[#8A5A20] flex-shrink-0 mt-0.5" />
               <p>
                 External stock links are stored as verified source references rather than hotlinked or scraped, protecting provider terms and ensuring you retain explicit control over assets uploaded to LinkedIn.
               </p>

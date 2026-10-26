@@ -359,6 +359,84 @@ export interface Database {
         }
         Relationships: []
       }
+      linkedin_oauth_states: {
+        Row: {
+          id: string
+          user_id: string
+          state_hash: string
+          expires_at: string
+          used: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          state_hash: string
+          expires_at: string
+          used?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          state_hash?: string
+          expires_at?: string
+          used?: boolean
+          created_at?: string
+        }
+        Relationships: []
+      }
+      linkedin_connections: {
+        Row: {
+          id: string
+          user_id: string
+          linkedin_member_id: string
+          encrypted_access_token: string
+          encrypted_refresh_token: string | null
+          access_token_expires_at: string | null
+          refresh_token_expires_at: string | null
+          scopes: string[]
+          name: string | null
+          email: string | null
+          picture_url: string | null
+          headline: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          linkedin_member_id: string
+          encrypted_access_token: string
+          encrypted_refresh_token?: string | null
+          access_token_expires_at?: string | null
+          refresh_token_expires_at?: string | null
+          scopes?: string[]
+          name?: string | null
+          email?: string | null
+          picture_url?: string | null
+          headline?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          linkedin_member_id?: string
+          encrypted_access_token?: string
+          encrypted_refresh_token?: string | null
+          access_token_expires_at?: string | null
+          refresh_token_expires_at?: string | null
+          scopes?: string[]
+          name?: string | null
+          email?: string | null
+          picture_url?: string | null
+          headline?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: Record<string, never>

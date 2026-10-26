@@ -98,16 +98,15 @@ const CandidateDraftEditor: React.FC<DraftEditorProps> = ({
   }
 
   const handleSave = async () => {
-    const currentDrafts: OutreachDrafts = {
+    const updatedDrafts: OutreachDrafts = {
       ...drafts,
-      inviteNote: editedInviteNote,
-      characterCount: editedInviteNote.length,
+      inviteNote: drafts.inviteNote,
       followUp1: editedFollowUp1,
       followUp2: editedFollowUp2,
+      characterCount: editedInviteNote.length,
       tone,
     }
-
-    const res = await onSave(candidate.id, currentDrafts, editedInviteNote)
+    const res = await onSave(candidate.id, updatedDrafts, editedInviteNote)
     if (res.success) {
       setSaveSuccess(true)
       setTimeout(() => setSaveSuccess(false), 3500)
@@ -115,99 +114,126 @@ const CandidateDraftEditor: React.FC<DraftEditorProps> = ({
   }
 
   const charCount = editedInviteNote.length
-  const isOverFreeLimit = charCount > 200
   const isOverHardLimit = charCount > 300
+  const isOverFreeLimit = charCount > 200
 
   return (
-    <div className="space-y-5">
-      {/* Selected Candidate Meta Header */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-3">
+    <div className="space-y-6 text-left">
+      {/* Candidate Focus Header */}
+      <div className="p-5 rounded-lg bg-[#FAF7F2] border border-[#D9CFC2] space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-lg font-bold text-white tracking-tight">
-              {candidate.full_name}
-            </h3>
-            <p className="text-xs text-slate-300 mt-0.5">{candidate.headline}</p>
+            <div className="flex items-center space-x-2">
+              <h3 className="text-base font-semibold text-[#292722]">{candidate.full_name}</h3>
+              <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#E8DFD3] text-[#292722] border border-[#D9CFC2]">
+                {candidate.match_score}% Match
+              </span>
+            </div>
+            <p className="text-xs text-[#73685B] mt-0.5">{candidate.headline}</p>
           </div>
 
           <a
             href={candidate.profile_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-blue-400 hover:text-blue-300 text-xs font-medium border border-slate-700 transition-colors shrink-0"
+            className="shrink-0 inline-flex items-center text-xs font-medium text-[#292722] hover:text-[#B49A7D] hover:underline"
           >
             <span>View LinkedIn Profile</span>
-            <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+            <ExternalLink className="w-3.5 h-3.5 ml-1" />
           </a>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 pt-1 border-t border-slate-800/80">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#73685B] pt-2 border-t border-[#D9CFC2]">
           {candidate.current_company && (
-            <span className="flex items-center">
-              <Building2 className="w-3 h-3 mr-1 text-slate-500" />
-              {candidate.current_company}
-            </span>
+            <div className="flex items-center space-x-1.5">
+              <Building2 className="w-3.5 h-3.5 text-[#B49A7D]" />
+              <span>{candidate.current_company}</span>
+            </div>
           )}
           {candidate.location && (
-            <span className="flex items-center">
-              <MapPin className="w-3 h-3 mr-1 text-slate-500" />
-              {candidate.location}
-            </span>
+            <div className="flex items-center space-x-1.5">
+              <MapPin className="w-3.5 h-3.5 text-[#B49A7D]" />
+              <span>{candidate.location}</span>
+            </div>
           )}
-          {drafts.hookReason && (
-            <span className="text-[11px] text-blue-300 bg-blue-950/70 border border-blue-900 px-2 py-0.5 rounded-full font-mono">
-              Hook: {drafts.hookReason}
-            </span>
-          )}
+          <div className="flex items-center space-x-1 text-[#2E5A36] font-medium">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Hook: {drafts.hookReason}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Tone & Context Generator Controls */}
+      <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg p-5 space-y-4">
+        <div>
+          <label className="block text-xs font-semibold text-[#292722] mb-1.5">
+            Communication Style &amp; Tone
+          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {[
+              {
+                id: 'professional_warm' as OutreachTone,
+                label: 'Professional & Warm',
+                sub: 'Polite, clear, respectful',
+              },
+              {
+                id: 'alumni_peer' as OutreachTone,
+                label: 'Peer / Alumni',
+                sub: 'Collegial, common ground',
+              },
+              {
+                id: 'founder_direct' as OutreachTone,
+                label: 'Direct & Concise',
+                sub: 'High-signal, compact',
+              },
+            ].map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => handleToneChange(t.id)}
+                className={`p-3 rounded-xl border text-left transition-all ${
+                  tone === t.id
+                    ? 'bg-[#1C1B19] border-[#C6A76B]/50 text-[#FAF7F2] shadow-sm'
+                    : 'bg-[#FAF7F2] border-[#D9CFC2] text-[#73685B] hover:text-[#292722] hover:bg-[#E8DFD3]'
+                }`}
+              >
+                <div className={`text-xs font-semibold ${tone === t.id ? 'text-[#C6A76B]' : 'text-[#292722]'}`}>
+                  {t.label}
+                </div>
+                <div className={`text-[10px] mt-0.5 ${tone === t.id ? 'text-[#FAF7F2]/80' : 'text-[#73685B]'}`}>
+                  {t.sub}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Generator Controls */}
-        <div className="pt-2 border-t border-slate-800/80 space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">
-                Outreach Tone
-              </label>
-              <select
-                value={tone}
-                onChange={(e) => handleToneChange(e.target.value as OutreachTone)}
-                className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
-              >
-                <option value="professional_warm">Professional & Warm (Default)</option>
-                <option value="peer_technical">Peer Technical (Open Source Focus)</option>
-                <option value="alumni_academic">Alumni & Campus Network</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">
-                Custom Hook Context <span className="text-slate-500 font-normal">(Optional fact)</span>
-              </label>
-              <input
-                type="text"
-                value={customContext}
-                onChange={(e) => setCustomContext(e.target.value)}
-                placeholder="e.g. Loved your PyTorch blog post on inference"
-                className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end pt-1">
+        <div>
+          <label className="block text-xs font-semibold text-[#292722] mb-1.5">
+            Add Specific Personal Context (Optional)
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={customContext}
+              onChange={(e) => setCustomContext(e.target.value)}
+              placeholder="e.g. Read your post on vLLM paged attention; enjoyed your talk at AI Summit"
+              className="flex-1 px-3.5 py-2 bg-[#FAF7F2] border border-[#D9CFC2] rounded-xl text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#292722]"
+            />
             <button
               type="button"
               onClick={handleGenerate}
               disabled={generating}
-              className="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-sm transition-all disabled:opacity-50"
+              className="inline-flex items-center px-4 py-2 bg-[#1C1B19] hover:bg-[#292722] text-[#FAF7F2] border border-[#C6A76B]/40 text-xs font-semibold rounded-xl transition-all shadow-sm disabled:opacity-50"
             >
               {generating ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                  <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin text-[#C6A76B]" />
                   Synthesizing...
                 </>
               ) : (
                 <>
-                  <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
+                  <RotateCcw className="w-3.5 h-3.5 mr-1.5 text-[#C6A76B]" />
                   Regenerate Drafts
                 </>
               )}
@@ -217,35 +243,35 @@ const CandidateDraftEditor: React.FC<DraftEditorProps> = ({
       </div>
 
       {saveSuccess && (
-        <div className="p-3.5 rounded-xl bg-emerald-950/70 border border-emerald-800/80 flex items-center space-x-3 text-emerald-200 text-xs sm:text-sm animate-in fade-in">
-          <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="p-3.5 rounded-md bg-[#EAF2EC] border border-[#C6DEC9] flex items-center space-x-3 text-[#2E5A36] text-xs sm:text-sm">
+          <Check className="w-4 h-4 text-[#2E5A36] shrink-0" />
           <span>Outreach drafts saved to your private database profile!</span>
         </div>
       )}
 
       {/* Draft 1: LinkedIn Connection Invite Note */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-3">
+      <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg p-5 space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h4 className="text-sm font-bold text-white flex items-center space-x-2">
+            <h4 className="text-sm font-semibold text-[#292722] flex items-center space-x-2">
               <span>1. LinkedIn Connection Note</span>
-              <span className="text-[11px] font-mono text-slate-400 font-normal">
+              <span className="text-[11px] font-mono text-[#73685B] font-normal">
                 (Sent with invite)
               </span>
             </h4>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-[#73685B] mt-0.5">
               Formula: Specific reference + one-line identity + zero pitch.
             </p>
           </div>
 
           {/* Character Counter Pill */}
           <div
-            className={`font-mono text-xs font-semibold px-2.5 py-1 rounded-lg border ${
+            className={`font-mono text-xs font-semibold px-2.5 py-1 rounded-md border ${
               isOverHardLimit
-                ? 'bg-red-950 text-red-300 border-red-800'
+                ? 'bg-[#FCEEEE] text-[#942F2F] border-[#F0C4C4]'
                 : isOverFreeLimit
-                ? 'bg-amber-950 text-amber-300 border-amber-800'
-                : 'bg-emerald-950 text-emerald-300 border-emerald-800'
+                ? 'bg-[#FBF4E8] text-[#8A5A20] border-[#E8D5B5]'
+                : 'bg-[#EAF2EC] text-[#2E5A36] border-[#C6DEC9]'
             }`}
           >
             [{charCount}/200]
@@ -257,35 +283,35 @@ const CandidateDraftEditor: React.FC<DraftEditorProps> = ({
           value={editedInviteNote}
           onChange={(e) => setEditedInviteNote(e.target.value)}
           placeholder="Invite note draft..."
-          className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 font-sans leading-relaxed"
+          className="w-full p-3 bg-[#FAF7F2] border border-[#D9CFC2] rounded-md text-xs sm:text-sm text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D] focus:ring-1 focus:ring-[#B49A7D] leading-relaxed"
         />
 
         {isOverHardLimit && (
-          <p className="text-[11px] text-red-400 flex items-center">
+          <p className="text-[11px] text-[#942F2F] flex items-center">
             <AlertCircle className="w-3.5 h-3.5 mr-1 shrink-0" />
             Exceeds LinkedIn maximum character length (300 characters). Please trim.
           </p>
         )}
         {isOverFreeLimit && !isOverHardLimit && (
-          <p className="text-[11px] text-amber-400 flex items-center">
+          <p className="text-[11px] text-[#8A5A20] flex items-center">
             <AlertCircle className="w-3.5 h-3.5 mr-1 shrink-0" />
             Over 200 characters. Recommended: stay under 200 for reliable mobile display.
           </p>
         )}
 
         <div className="flex items-center justify-between pt-1">
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] text-[#73685B]">
             Always review and verify before copying.
           </span>
 
           <button
             type="button"
             onClick={() => handleCopy(editedInviteNote, 'invite')}
-            className="inline-flex items-center px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 transition-colors"
+            className="inline-flex items-center px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#292722] text-xs font-medium rounded-md border border-[#D9CFC2] transition-colors"
           >
             {copiedKey === 'invite' ? (
               <>
-                <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-400" />
+                <Check className="w-3.5 h-3.5 mr-1.5 text-[#2E5A36]" />
                 Copied to Clipboard!
               </>
             ) : (
@@ -299,20 +325,20 @@ const CandidateDraftEditor: React.FC<DraftEditorProps> = ({
       </div>
 
       {/* Draft 2: Follow-Up #1 (+4 Days) */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-3">
+      <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg p-5 space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h4 className="text-sm font-bold text-white flex items-center space-x-2">
+            <h4 className="text-sm font-semibold text-[#292722] flex items-center space-x-2">
               <span>2. First Direct Message (+4 Days)</span>
-              <span className="text-[11px] font-mono text-emerald-400 font-normal">
+              <span className="text-[11px] font-mono text-[#2E5A36] font-normal">
                 (After connection is accepted)
               </span>
             </h4>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-[#73685B] mt-0.5">
               Continuity with note. Gives an open-source artifact or paper before asking for a 15-minute chat.
             </p>
           </div>
-          <span className="text-[11px] font-mono text-slate-500">
+          <span className="text-[11px] font-mono text-[#73685B]">
             <Clock className="w-3 h-3 inline mr-1" />
             Day +4
           </span>
@@ -323,18 +349,18 @@ const CandidateDraftEditor: React.FC<DraftEditorProps> = ({
           value={editedFollowUp1}
           onChange={(e) => setEditedFollowUp1(e.target.value)}
           placeholder="First follow-up message..."
-          className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 font-sans leading-relaxed"
+          className="w-full p-3 bg-[#FAF7F2] border border-[#D9CFC2] rounded-md text-xs sm:text-sm text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D] focus:ring-1 focus:ring-[#B49A7D] leading-relaxed"
         />
 
         <div className="flex justify-end pt-1">
           <button
             type="button"
             onClick={() => handleCopy(editedFollowUp1, 'fu1')}
-            className="inline-flex items-center px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 transition-colors"
+            className="inline-flex items-center px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#292722] text-xs font-medium rounded-md border border-[#D9CFC2] transition-colors"
           >
             {copiedKey === 'fu1' ? (
               <>
-                <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-400" />
+                <Check className="w-3.5 h-3.5 mr-1.5 text-[#2E5A36]" />
                 Copied!
               </>
             ) : (
@@ -348,20 +374,20 @@ const CandidateDraftEditor: React.FC<DraftEditorProps> = ({
       </div>
 
       {/* Draft 3: Follow-Up #2 (+10 Days Close the Loop) */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-3">
+      <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg p-5 space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h4 className="text-sm font-bold text-white flex items-center space-x-2">
+            <h4 className="text-sm font-semibold text-[#292722] flex items-center space-x-2">
               <span>3. Final Follow-Up (+10 Days)</span>
-              <span className="text-[11px] font-mono text-amber-400 font-normal">
+              <span className="text-[11px] font-mono text-[#8A5A20] font-normal">
                 (Close the loop)
               </span>
             </h4>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-[#73685B] mt-0.5">
               Acknowledges busy schedule, removes all pressure, politely closes the loop.
             </p>
           </div>
-          <span className="text-[11px] font-mono text-slate-500">
+          <span className="text-[11px] font-mono text-[#73685B]">
             <Clock className="w-3 h-3 inline mr-1" />
             Day +10
           </span>
@@ -372,18 +398,18 @@ const CandidateDraftEditor: React.FC<DraftEditorProps> = ({
           value={editedFollowUp2}
           onChange={(e) => setEditedFollowUp2(e.target.value)}
           placeholder="Final follow-up message..."
-          className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 font-sans leading-relaxed"
+          className="w-full p-3 bg-[#FAF7F2] border border-[#D9CFC2] rounded-md text-xs sm:text-sm text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D] focus:ring-1 focus:ring-[#B49A7D] leading-relaxed"
         />
 
         <div className="flex justify-end pt-1">
           <button
             type="button"
             onClick={() => handleCopy(editedFollowUp2, 'fu2')}
-            className="inline-flex items-center px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 transition-colors"
+            className="inline-flex items-center px-3 py-1.5 bg-[#FAF7F2] hover:bg-[#E8DFD3] text-[#292722] text-xs font-medium rounded-md border border-[#D9CFC2] transition-colors"
           >
             {copiedKey === 'fu2' ? (
               <>
-                <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-400" />
+                <Check className="w-3.5 h-3.5 mr-1.5 text-[#2E5A36]" />
                 Copied!
               </>
             ) : (
@@ -397,17 +423,17 @@ const CandidateDraftEditor: React.FC<DraftEditorProps> = ({
       </div>
 
       {/* Master Save Bar */}
-      <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="text-xs text-slate-400">
+      <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="text-xs text-[#73685B]">
           <span>Persists your customized drafts to Supabase </span>
-          <code className="text-slate-300 font-mono">connection_messages</code>
+          <code className="text-[#292722] font-mono bg-[#E8DFD3] px-1.5 py-0.5 rounded">connection_messages</code>
         </div>
 
         <button
           type="button"
           onClick={handleSave}
           disabled={Boolean(savingId) || isOverHardLimit}
-          className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-sm transition-all disabled:opacity-50"
+          className="inline-flex items-center justify-center px-5 py-2.5 bg-[#292722] hover:bg-[#3D3A33] text-[#FAF7F2] text-xs font-medium rounded-md transition-colors disabled:opacity-50"
         >
           {savingId ? (
             <>
@@ -448,26 +474,26 @@ export const OutreachHub: React.FC<OutreachHubProps> = ({
   return (
     <div className="space-y-6 text-left max-w-5xl mx-auto">
       {/* Overview Banner */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl">
+      <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg p-6 sm:p-8 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs font-medium mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Milestone 5 &bull; Personalized Outreach Engine</span>
+            <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded bg-[#E8DFD3] text-[#73685B] border border-[#D9CFC2] text-xs font-medium uppercase tracking-wider mb-2">
+              <Sparkles className="w-3 h-3 text-[#B49A7D]" />
+              <span>Personalized Outreach Engine</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-              Connection Message & Follow-Up Studio
+            <h2 className="text-xl sm:text-2xl font-light text-[#292722] tracking-tight">
+              Connection Message &amp; Follow-Up Studio
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl">
-              Strictly grounded in verified profile facts and <code className="text-slate-300 bg-slate-950 px-1.5 py-0.5 rounded">li-dm</code> rules: under 200 characters, no sales funnels, and two thoughtful follow-ups.
+            <p className="text-xs sm:text-sm text-[#73685B] mt-1 max-w-xl font-normal leading-relaxed">
+              Strictly grounded in verified profile facts and <code className="text-[#292722] bg-[#E8DFD3] px-1.5 py-0.5 rounded">li-dm</code> rules: under 200 characters, no sales funnels, and two thoughtful follow-ups.
             </p>
           </div>
 
-          <div className="flex items-center space-x-4 bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 shrink-0">
-            <Send className="w-5 h-5 text-emerald-400" />
+          <div className="flex items-center space-x-4 bg-[#FAF7F2] border border-[#D9CFC2] rounded-md px-4 py-3 shrink-0">
+            <Send className="w-5 h-5 text-[#2E5A36]" />
             <div>
-              <div className="text-xs text-slate-400">Approved for Outreach</div>
-              <div className="text-base font-bold text-white font-mono">
+              <div className="text-xs text-[#73685B]">Approved for Outreach</div>
+              <div className="text-base font-bold text-[#292722] font-mono">
                 {approvedCandidates.length}
               </div>
             </div>
@@ -475,19 +501,19 @@ export const OutreachHub: React.FC<OutreachHubProps> = ({
         </div>
 
         {/* Informational Guidance Alert */}
-        <div className="mt-4 p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 flex items-start space-x-3 text-slate-300 text-xs">
-          <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+        <div className="mt-4 p-3.5 rounded-md bg-[#FAF7F2] border border-[#D9CFC2] flex items-start space-x-3 text-[#73685B] text-xs">
+          <Info className="w-4 h-4 text-[#B49A7D] shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <span className="font-semibold text-white">LinkedIn Terms Compliance Guarantee:</span>
-            <p className="text-slate-400 leading-relaxed">
+            <span className="font-semibold text-[#292722]">LinkedIn Terms Compliance Guarantee:</span>
+            <p className="text-[#73685B] leading-relaxed">
               This application never clicks Connect, never sends automated messages, and never uses browser bots. You copy each message and send it manually through your personal browser tab.
             </p>
           </div>
         </div>
 
         {messageError && (
-          <div className="mt-4 p-3.5 rounded-xl bg-red-950/70 border border-red-800/80 flex items-center space-x-3 text-red-200 text-xs sm:text-sm">
-            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+          <div className="mt-4 p-3.5 rounded-md bg-[#FCEEEE] border border-[#F0C4C4] flex items-center space-x-3 text-[#942F2F] text-xs sm:text-sm">
+            <AlertCircle className="w-4 h-4 text-[#942F2F] shrink-0" />
             <span>{messageError}</span>
           </div>
         )}
@@ -495,24 +521,24 @@ export const OutreachHub: React.FC<OutreachHubProps> = ({
 
       {/* Main Studio Grid */}
       {candidatesLoading ? (
-        <div className="p-12 text-center bg-slate-900/60 border border-slate-800 rounded-2xl">
-          <Loader2 className="w-8 h-8 animate-spin text-emerald-500 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Loading approved candidates...</p>
+        <div className="p-12 text-center bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg">
+          <Loader2 className="w-6 h-6 animate-spin text-[#292722] mx-auto mb-2" />
+          <p className="text-xs uppercase tracking-wider text-[#73685B]">Loading approved candidates...</p>
         </div>
       ) : approvedCandidates.length === 0 ? (
-        <div className="p-12 text-center bg-slate-900/60 border border-slate-800 rounded-2xl space-y-4">
-          <MessageSquare className="w-12 h-12 text-slate-600 mx-auto" />
-          <h3 className="text-base font-semibold text-white">No candidates approved for outreach yet</h3>
-          <p className="text-xs text-slate-400 max-w-md mx-auto">
+        <div className="p-12 text-center bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg space-y-4">
+          <MessageSquare className="w-10 h-10 text-[#B49A7D] mx-auto" />
+          <h3 className="text-sm font-semibold text-[#292722]">No candidates approved for outreach yet</h3>
+          <p className="text-xs text-[#73685B] max-w-md mx-auto leading-relaxed">
             Candidates must be reviewed and approved in the Curation Dashboard before generating outreach drafts.
           </p>
           {onNavigateToCuration && (
             <button
               type="button"
               onClick={onNavigateToCuration}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-sm transition-all"
+              className="inline-flex items-center px-4 py-2 bg-[#292722] hover:bg-[#3D3A33] text-[#FAF7F2] text-xs font-medium rounded-md transition-colors"
             >
-              Open Candidate Curation (M4)
+              Open Candidate Curation
             </button>
           )}
         </div>
@@ -520,7 +546,7 @@ export const OutreachHub: React.FC<OutreachHubProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column: Approved Candidate Selector */}
           <div className="lg:col-span-4 space-y-3">
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#73685B] px-1">
               Select Approved Candidate ({approvedCandidates.length})
             </h3>
 
@@ -534,29 +560,29 @@ export const OutreachHub: React.FC<OutreachHubProps> = ({
                     key={cand.id}
                     type="button"
                     onClick={() => setSelectedId(cand.id)}
-                    className={`w-full text-left p-3.5 rounded-xl border transition-all ${
+                    className={`w-full text-left p-3.5 rounded-md border transition-colors ${
                       isSelected
-                        ? 'bg-slate-800 border-emerald-600/80 shadow-md ring-1 ring-emerald-500/20'
-                        : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
+                        ? 'bg-[#FAF7F2] border-[#292722] shadow-sm'
+                        : 'bg-[#FAF7F2] border-[#D9CFC2] hover:border-[#B49A7D] hover:bg-[#E8DFD3]/40'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <div className="font-semibold text-white text-xs sm:text-sm truncate">
+                      <div className="font-semibold text-[#292722] text-xs sm:text-sm truncate">
                         {cand.full_name}
                       </div>
-                      <span className="shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                      <span className="shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#EAF2EC] text-[#2E5A36] border border-[#C6DEC9]">
                         {cand.match_score}%
                       </span>
                     </div>
 
-                    <p className="text-slate-400 text-[11px] truncate mt-0.5">
+                    <p className="text-[#73685B] text-[11px] truncate mt-0.5">
                       {cand.headline || 'Software Professional'}
                     </p>
 
-                    <div className="flex items-center justify-between text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-800/60">
+                    <div className="flex items-center justify-between text-[10px] text-[#73685B] mt-2 pt-2 border-t border-[#D9CFC2]">
                       <span>{cand.current_company || 'Independent'}</span>
                       {hasSavedMsg && (
-                        <span className="text-emerald-400 flex items-center">
+                        <span className="text-[#2E5A36] flex items-center font-medium">
                           <Check className="w-2.5 h-2.5 mr-0.5" /> Draft Saved
                         </span>
                       )}

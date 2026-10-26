@@ -74,35 +74,35 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
   }
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all shadow-sm space-y-4">
+    <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-lg p-5 hover:border-[#B49A7D] transition-colors shadow-sm space-y-4 text-left">
       {/* Header: Title, Company, Status Badge & Match Score */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div className="space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-base font-bold text-white tracking-tight">{internship.title}</h3>
-            <span className={`text-xs px-2.5 py-0.5 rounded-full border font-medium ${stage.badgeColor}`}>
+            <h3 className="text-base font-semibold text-[#292722] tracking-tight">{internship.title}</h3>
+            <span className={`text-xs px-2.5 py-0.5 rounded border font-medium ${stage.badgeColor}`}>
               {stage.label}
             </span>
             {internship.source === 'sample_dataset' && (
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950/60 text-blue-300 border border-blue-800/60">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#E8DFD3] text-[#73685B] border border-[#D9CFC2]">
                 Sample Opportunity
               </span>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
-            <span className="inline-flex items-center text-slate-300 font-medium">
-              <Building2 className="w-3.5 h-3.5 mr-1 text-slate-400" />
+          <div className="flex flex-wrap items-center gap-3 text-xs text-[#73685B]">
+            <span className="inline-flex items-center text-[#292722] font-medium">
+              <Building2 className="w-3.5 h-3.5 mr-1 text-[#B49A7D]" />
               {internship.company}
             </span>
             {internship.location && (
               <span className="inline-flex items-center">
-                <MapPin className="w-3.5 h-3.5 mr-1 text-slate-500" />
+                <MapPin className="w-3.5 h-3.5 mr-1 text-[#B49A7D]" />
                 {internship.location}
               </span>
             )}
-            <span className="inline-flex items-center capitalize text-slate-400">
-              Mode: <strong className="ml-1 text-slate-300">{internship.work_mode || 'onsite'}</strong>
+            <span className="inline-flex items-center capitalize text-[#73685B]">
+              Mode: <strong className="ml-1 text-[#292722]">{internship.work_mode || 'onsite'}</strong>
             </span>
           </div>
         </div>
@@ -110,31 +110,31 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
         {/* Match Score Badge */}
         <div className="flex items-center gap-3 self-start sm:self-auto">
           <div
-            className={`px-3 py-1.5 rounded-xl border text-center ${
+            className={`px-3 py-1.5 rounded-xl border text-center shadow-xs ${
               (internship.match_score ?? 0) >= 80
-                ? 'bg-emerald-950/80 border-emerald-800 text-emerald-300'
+                ? 'bg-[#1C1B19] border-[#C6A76B]/40 text-[#C6A76B]'
                 : (internship.match_score ?? 0) >= 60
-                ? 'bg-blue-950/80 border-blue-800 text-blue-300'
-                : 'bg-slate-800 border-slate-700 text-slate-300'
+                ? 'bg-[#E8DFD3] border-[#D9CFC2] text-[#292722]'
+                : 'bg-[#FBF4E8] border-[#E8D5B5] text-[#8A5A20]'
             }`}
           >
-            <div className="text-[10px] uppercase font-mono tracking-wider text-slate-400">Match</div>
-            <div className="text-lg font-bold leading-tight">{internship.match_score ?? 50}%</div>
+            <div className={`text-[10px] uppercase font-mono tracking-wider ${(internship.match_score ?? 0) >= 80 ? 'text-[#C6A76B]/80' : 'text-[#73685B]'}`}>Match</div>
+            <div className="text-lg font-bold font-mono leading-tight">{internship.match_score ?? 50}%</div>
           </div>
         </div>
       </div>
 
       {/* Deadlines & Dates bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800/80 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#D9CFC2] text-xs">
         <div className="flex flex-wrap items-center gap-2">
           {internship.deadline ? (
             <div
-              className={`inline-flex items-center px-2.5 py-1 rounded-lg border font-medium ${
+              className={`inline-flex items-center px-2.5 py-1 rounded-md border font-medium ${
                 isOverdue
-                  ? 'bg-rose-950/90 text-rose-300 border-rose-800'
+                  ? 'bg-[#FCEEEE] text-[#942F2F] border-[#F0C4C4]'
                   : isUpcoming
-                  ? 'bg-amber-950/90 text-amber-300 border-amber-800'
-                  : 'bg-slate-800 text-slate-300 border-slate-700'
+                  ? 'bg-[#FBF4E8] text-[#8A5A20] border-[#E8D5B5]'
+                  : 'bg-[#FAF7F2] text-[#73685B] border-[#D9CFC2]'
               }`}
             >
               <Calendar className="w-3.5 h-3.5 mr-1.5" />
@@ -146,7 +146,7 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
             <button
               type="button"
               onClick={() => setIsEditingDeadline(true)}
-              className="inline-flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+              className="inline-flex items-center text-[#73685B] hover:text-[#292722] transition-colors"
             >
               <Calendar className="w-3.5 h-3.5 mr-1" />
               + Add Deadline
@@ -154,7 +154,7 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
           )}
 
           {internship.applied_at && (
-            <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-emerald-950/40 text-emerald-400 border border-emerald-900/50">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#EAF2EC] text-[#2E5A36] border border-[#C6DEC9]">
               <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
               Applied: {new Date(internship.applied_at).toLocaleDateString()}
             </span>
@@ -166,7 +166,7 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
           href={internship.posting_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center text-xs font-semibold text-blue-400 hover:text-blue-300 hover:underline transition-colors"
+          className="inline-flex items-center text-xs font-medium text-[#292722] hover:text-[#B49A7D] hover:underline transition-colors"
         >
           <span>Official Application Portal</span>
           <ExternalLink className="w-3.5 h-3.5 ml-1" />
@@ -175,24 +175,24 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
 
       {/* Deadline inline edit */}
       {isEditingDeadline && (
-        <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+        <div className="flex items-center gap-2 p-2 rounded-md bg-[#FAF7F2] border border-[#D9CFC2] text-xs">
           <input
             type="date"
             value={deadlineInput}
             onChange={(e) => setDeadlineInput(e.target.value)}
-            className="px-2 py-1 bg-slate-900 border border-slate-700 rounded text-slate-200"
+            className="px-2 py-1 bg-[#FAF7F2] border border-[#D9CFC2] rounded text-[#292722]"
           />
           <button
             type="button"
             onClick={handleSaveDeadline}
-            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded font-medium"
+            className="px-2.5 py-1 bg-[#292722] hover:bg-[#3D3A33] text-[#FAF7F2] rounded font-medium"
           >
             Save
           </button>
           <button
             type="button"
             onClick={() => setIsEditingDeadline(false)}
-            className="px-2.5 py-1 text-slate-400 hover:text-white"
+            className="px-2.5 py-1 text-[#73685B] hover:text-[#292722]"
           >
             Cancel
           </button>
@@ -202,31 +202,31 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
       {/* Skills: Required & Missing */}
       <div className="space-y-1.5">
         <div className="flex flex-wrap gap-1.5 items-center">
-          <span className="text-[11px] text-slate-500 font-medium mr-1">Required:</span>
+          <span className="text-[11px] text-[#73685B] font-medium mr-1">Required:</span>
           {internship.required_skills && internship.required_skills.length > 0 ? (
             internship.required_skills.map((skill, idx) => (
               <span
                 key={idx}
-                className="text-[11px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700/80"
+                className="text-[11px] px-2 py-0.5 rounded bg-[#E8DFD3] text-[#292722] border border-[#D9CFC2]"
               >
                 {skill}
               </span>
             ))
           ) : (
-            <span className="text-[11px] text-slate-500 italic">General engineering criteria</span>
+            <span className="text-[11px] text-[#73685B] italic">General engineering criteria</span>
           )}
         </div>
 
         {internship.missing_skills && internship.missing_skills.length > 0 && (
           <div className="flex flex-wrap gap-1.5 items-center pt-1">
-            <span className="text-[11px] text-amber-400 font-medium mr-1 flex items-center">
+            <span className="text-[11px] text-[#8A5A20] font-medium mr-1 flex items-center">
               <AlertTriangle className="w-3 h-3 mr-1" />
               Skills to Highlight / Develop:
             </span>
             {internship.missing_skills.map((skill, idx) => (
               <span
                 key={idx}
-                className="text-[11px] px-2 py-0.5 rounded-md bg-amber-950/60 text-amber-300 border border-amber-800/60"
+                className="text-[11px] px-2 py-0.5 rounded bg-[#FBF4E8] text-[#8A5A20] border border-[#E8D5B5]"
               >
                 {skill}
               </span>
@@ -236,36 +236,36 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
       </div>
 
       {/* Transparent Match Reasons (Accordion) */}
-      <div className="border-t border-slate-800/80 pt-2">
+      <div className="border-t border-[#D9CFC2] pt-2">
         <button
           type="button"
           onClick={() => setShowDetails(!showDetails)}
-          className="w-full flex items-center justify-between text-xs text-slate-400 hover:text-slate-200 transition-colors py-1"
+          className="w-full flex items-center justify-between text-xs text-[#73685B] hover:text-[#292722] transition-colors py-1"
         >
           <span className="inline-flex items-center">
-            <Sparkles className="w-3.5 h-3.5 mr-1.5 text-blue-400" />
+            <Sparkles className="w-3.5 h-3.5 mr-1.5 text-[#B49A7D]" />
             <span>Why this opportunity matches your career goals</span>
           </span>
           {showDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
 
         {showDetails && (
-          <div className="mt-2 p-3 bg-slate-950/70 border border-slate-800/80 rounded-xl space-y-2 text-xs">
-            <div className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">
-              Transparent Evaluation Breakdown
+          <div className="mt-2 p-3 bg-[#FAF7F2] border border-[#D9CFC2] rounded-md space-y-2 text-xs">
+            <div className="text-[11px] font-mono text-[#73685B] uppercase tracking-wider">
+              Evaluation Breakdown
             </div>
             {internship.match_reasons && internship.match_reasons.length > 0 ? (
               internship.match_reasons.map((reason, idx) => (
-                <div key={idx} className="flex items-start justify-between text-slate-300 gap-2">
+                <div key={idx} className="flex items-start justify-between text-[#73685B] gap-2">
                   <div className="flex items-center">
-                    <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-[#2E5A36] shrink-0" />
                     <span>{reason.text}</span>
                   </div>
-                  <span className="font-mono text-[11px] text-blue-400 shrink-0">+{reason.weight} pts</span>
+                  <span className="font-mono text-[11px] text-[#292722] shrink-0">+{reason.weight} pts</span>
                 </div>
               ))
             ) : (
-              <p className="text-slate-400">Evaluated against target roles and technical skills.</p>
+              <p className="text-[#73685B]">Evaluated against target roles and technical skills.</p>
             )}
           </div>
         )}
@@ -273,12 +273,12 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
 
       {/* Private Notes & Follow-Up */}
       {internship.notes && !isEditingNotes && (
-        <div className="p-2.5 rounded-xl bg-slate-950/50 border border-slate-800/60 text-xs text-slate-300 flex items-start justify-between gap-2">
+        <div className="p-2.5 rounded-md bg-[#FAF7F2] border border-[#D9CFC2] text-xs text-[#292722] flex items-start justify-between gap-2">
           <p className="italic">{internship.notes}</p>
           <button
             type="button"
             onClick={() => setIsEditingNotes(true)}
-            className="text-slate-500 hover:text-slate-300 p-1"
+            className="text-[#73685B] hover:text-[#292722] p-1"
             title="Edit Notes"
           >
             <Edit3 className="w-3 h-3" />
@@ -287,26 +287,26 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
       )}
 
       {isEditingNotes && (
-        <div className="space-y-2 p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+        <div className="space-y-2 p-2.5 rounded-md bg-[#FAF7F2] border border-[#D9CFC2] text-xs">
           <textarea
             value={notesInput}
             onChange={(e) => setNotesInput(e.target.value)}
             rows={2}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 focus:outline-none focus:border-blue-500"
+            className="w-full bg-[#FAF7F2] border border-[#D9CFC2] rounded-md p-2 text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D]"
             placeholder="Add personal notes, recruiter contacts, or interview round details..."
           />
           <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={() => setIsEditingNotes(false)}
-              className="px-2.5 py-1 text-slate-400 hover:text-white"
+              className="px-2.5 py-1 text-[#73685B] hover:text-[#292722]"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleSaveNotes}
-              className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-md font-medium"
+              className="px-3 py-1 bg-[#292722] hover:bg-[#3D3A33] text-[#FAF7F2] rounded-md font-medium"
             >
               Save Notes
             </button>
@@ -315,15 +315,15 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
       )}
 
       {/* Action Footer: Stage Transition Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#D9CFC2] text-xs">
         {/* Stage Selector */}
         <div className="flex items-center gap-2">
-          <span className="text-slate-500 font-medium">Stage:</span>
+          <span className="text-[#73685B] font-medium">Stage:</span>
           <select
             value={internship.status}
             onChange={(e) => onUpdateStatus(internship.id, e.target.value as InternshipStatus)}
             disabled={isSaving}
-            className="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer"
+            className="bg-[#FAF7F2] border border-[#D9CFC2] text-[#292722] text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:border-[#B49A7D] cursor-pointer"
           >
             <option value="bookmarked">Saved / Interested</option>
             <option value="applied">Applied</option>
@@ -341,7 +341,7 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
             <button
               type="button"
               onClick={() => setIsEditingNotes(true)}
-              className="inline-flex items-center px-2 py-1 text-slate-400 hover:text-slate-200 rounded border border-slate-800 hover:border-slate-700 transition-colors"
+              className="inline-flex items-center px-2 py-1 text-[#73685B] hover:text-[#292722] rounded border border-[#D9CFC2] hover:bg-[#E8DFD3] transition-colors"
             >
               <Edit3 className="w-3 h-3 mr-1" />
               Notes
@@ -352,7 +352,7 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
             <button
               type="button"
               onClick={() => setIsEditingDeadline(true)}
-              className="inline-flex items-center px-2 py-1 text-slate-400 hover:text-slate-200 rounded border border-slate-800 hover:border-slate-700 transition-colors"
+              className="inline-flex items-center px-2 py-1 text-[#73685B] hover:text-[#292722] rounded border border-[#D9CFC2] hover:bg-[#E8DFD3] transition-colors"
             >
               <Clock className="w-3 h-3 mr-1" />
               Deadline
@@ -362,7 +362,7 @@ export const InternshipCard: React.FC<InternshipCardProps> = ({
           <button
             type="button"
             onClick={() => onDelete(internship.id)}
-            className="p-1.5 text-slate-600 hover:text-rose-400 transition-colors rounded hover:bg-slate-800"
+            className="p-1.5 text-[#73685B] hover:text-[#942F2F] transition-colors rounded hover:bg-[#E8DFD3]"
             title="Delete Opportunity"
           >
             <Trash2 className="w-3.5 h-3.5" />

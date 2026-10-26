@@ -121,14 +121,14 @@ export const DeviceMediaUploader: React.FC<DeviceMediaUploaderProps> = ({
   return (
     <div className="space-y-4">
       {error && (
-        <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-center gap-2 text-rose-300 text-xs">
+        <div className="p-3 bg-[#FCEEEE] border border-[#F0C4C4] rounded-xl flex items-center gap-2 text-[#942F2F] text-xs font-medium">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {successNote && (
-        <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-lg flex items-center gap-2 text-emerald-300 text-xs">
+        <div className="p-3 bg-[#EAF2EC] border border-[#C6DEC9] rounded-xl flex items-center gap-2 text-[#2E5A36] text-xs font-medium">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           <span>{successNote}</span>
         </div>
@@ -141,10 +141,10 @@ export const DeviceMediaUploader: React.FC<DeviceMediaUploaderProps> = ({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={() => !isUploading && fileInputRef.current?.click()}
-          className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all ${
+          className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
             isDragging
-              ? 'border-indigo-500 bg-indigo-950/20'
-              : 'border-slate-800 hover:border-slate-700 bg-slate-900/60'
+              ? 'border-[#292722] bg-[#E8DFD3]/40'
+              : 'border-[#D9CFC2] hover:border-[#B49A7D] bg-[#FAF7F2]'
           } ${isUploading ? 'opacity-60 pointer-events-none' : ''}`}
         >
           <input
@@ -156,31 +156,31 @@ export const DeviceMediaUploader: React.FC<DeviceMediaUploaderProps> = ({
             className="hidden"
           />
 
-          <div className="flex flex-col items-center justify-center space-y-2">
-            <div className="p-2.5 rounded-full bg-indigo-500/10 text-indigo-400">
+          <div className="flex flex-col items-center justify-center space-y-2.5">
+            <div className="p-3 rounded-full bg-[#E8DFD3] text-[#73685B]">
               {isUploading ? (
-                <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
+                <Loader2 className="w-6 h-6 animate-spin text-[#292722]" />
               ) : (
                 <UploadCloud className="w-6 h-6" />
               )}
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-white">
+              <p className="text-xs font-semibold text-[#292722]">
                 {isUploading ? uploadProgress : 'Click to upload or drag & drop files here'}
               </p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="text-[11px] text-[#73685B] mt-0.5">
                 PNG, JPG, WebP (max 10MB) • MP4, WebM (max 50MB)
               </p>
             </div>
 
-            <span className="text-[10px] text-slate-500 font-mono">
+            <span className="text-[10px] text-[#73685B] font-mono">
               {mediaAssets.length} / {MEDIA_LIMITS.MAX_FILES_PER_POST} attachments used
             </span>
           </div>
         </div>
       ) : (
-        <div className="p-3 bg-slate-900/80 border border-slate-800 rounded-lg text-xs text-slate-400 text-center">
+        <div className="p-3.5 bg-[#FAF7F2] border border-[#D9CFC2] rounded-xl text-xs text-[#73685B] text-center">
           Maximum of {MEDIA_LIMITS.MAX_FILES_PER_POST} media attachments reached for this post draft.
         </div>
       )}
@@ -189,10 +189,10 @@ export const DeviceMediaUploader: React.FC<DeviceMediaUploaderProps> = ({
       {mediaAssets.length > 0 && (
         <div className="space-y-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-300">
+            <span className="text-xs font-semibold text-[#292722]">
               Attached Media Assets ({mediaAssets.length})
             </span>
-            <span className="text-[11px] text-slate-500">
+            <span className="text-[11px] text-[#73685B]">
               Stored securely in private storage bucket
             </span>
           </div>
@@ -206,11 +206,11 @@ export const DeviceMediaUploader: React.FC<DeviceMediaUploaderProps> = ({
               return (
                 <div
                   key={asset.id}
-                  className="p-3 bg-slate-900 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  className="p-3.5 bg-[#FAF7F2] border border-[#D9CFC2] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm"
                 >
                   {/* Left: Preview thumbnail and details */}
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <div className="w-14 h-14 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
+                    <div className="w-14 h-14 rounded-xl bg-[#F4EEE6] border border-[#D9CFC2] flex items-center justify-center overflow-hidden flex-shrink-0 relative">
                       {asset.preview_url ? (
                         isVideo ? (
                           <video
@@ -226,39 +226,39 @@ export const DeviceMediaUploader: React.FC<DeviceMediaUploaderProps> = ({
                           />
                         )
                       ) : isVideo ? (
-                        <VideoIcon className="w-5 h-5 text-purple-400" />
+                        <VideoIcon className="w-5 h-5 text-[#8A5A20]" />
                       ) : (
-                        <ImageIcon className="w-5 h-5 text-indigo-400" />
+                        <ImageIcon className="w-5 h-5 text-[#73685B]" />
                       )}
 
                       {isVideo && (
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                          <VideoIcon className="w-4 h-4 text-white" />
+                        <div className="absolute inset-0 bg-[#292722]/40 flex items-center justify-center">
+                          <VideoIcon className="w-4 h-4 text-[#FAF7F2]" />
                         </div>
                       )}
                     </div>
 
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium text-white truncate max-w-[200px] sm:max-w-[300px]">
+                        <span className="text-xs font-semibold text-[#292722] truncate max-w-[200px] sm:max-w-[300px]">
                           {asset.file_name}
                         </span>
-                        <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-300">
+                        <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded bg-[#E8DFD3] text-[#73685B]">
                           {isVideo ? 'Video' : 'Image'}
                         </span>
-                        <span className="text-[10px] text-slate-400 font-mono">
+                        <span className="text-[10px] text-[#73685B] font-mono">
                           {formatFileSize(asset.file_size)}
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <FileText className="w-3 h-3 text-slate-500 flex-shrink-0" />
+                        <FileText className="w-3 h-3 text-[#73685B] flex-shrink-0" />
                         <input
                           type="text"
                           defaultValue={asset.caption || ''}
                           onBlur={(e) => onUpdateCaption(asset.id, e.target.value.trim())}
                           placeholder="Add caption, alt text, or notes..."
-                          className="w-full bg-slate-950 border border-slate-800 rounded px-2 py-0.5 text-xs text-slate-300 focus:outline-none focus:border-indigo-500 placeholder-slate-600"
+                          className="w-full bg-[#F4EEE6] border border-[#D9CFC2] rounded-lg px-2.5 py-1 text-xs text-[#292722] focus:outline-none focus:border-[#292722] placeholder-[#73685B]/60"
                         />
                       </div>
                     </div>
@@ -269,7 +269,7 @@ export const DeviceMediaUploader: React.FC<DeviceMediaUploaderProps> = ({
                     <button
                       type="button"
                       onClick={() => onDeleteAsset(asset.id)}
-                      className="p-1.5 rounded-lg bg-slate-950 hover:bg-rose-950/60 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-800/60 transition-colors"
+                      className="p-1.5 rounded-lg bg-[#FAF7F2] hover:bg-[#FCEEEE] text-[#73685B] hover:text-[#942F2F] border border-[#D9CFC2] hover:border-[#F0C4C4] transition-colors"
                       title="Remove attachment"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -283,10 +283,10 @@ export const DeviceMediaUploader: React.FC<DeviceMediaUploaderProps> = ({
       )}
 
       {/* Security notice */}
-      <div className="p-2.5 bg-slate-900/60 border border-slate-800/80 rounded-lg flex items-start gap-2 text-[11px] text-slate-400">
-        <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+      <div className="p-3 bg-[#FAF7F2] border border-[#D9CFC2] rounded-xl flex items-start gap-2.5 text-[11px] text-[#73685B]">
+        <ShieldCheck className="w-4 h-4 text-[#2E5A36] flex-shrink-0 mt-0.5" />
         <p>
-          Uploaded files are stored in your private Supabase Storage bucket (<code className="text-slate-300">post-media</code>) and scoped to your user ID. Media remains in draft storage and is never published or sent to LinkedIn automatically.
+          Uploaded files are stored in your private Supabase Storage bucket (<code className="text-[#292722] font-semibold">post-media</code>) and scoped to your user ID. Media remains in draft storage and is never published or sent to LinkedIn automatically.
         </p>
       </div>
     </div>

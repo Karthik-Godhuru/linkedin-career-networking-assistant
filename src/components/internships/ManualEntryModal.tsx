@@ -76,17 +76,17 @@ export const ManualEntryModal: React.FC<ManualEntryModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1C1B19]/70 backdrop-blur-sm">
+      <div className="bg-[#FAF7F2] border border-[#D9CFC2] rounded-2xl w-full max-w-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh] text-left">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-          <h2 className="text-base font-bold text-white tracking-tight">
+        <div className="px-6 py-5 border-b border-[#D9CFC2] flex items-center justify-between bg-[#FAF7F2]">
+          <h2 className="text-base font-semibold text-[#292722] tracking-tight">
             Add Internship Opportunity
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg"
+            className="text-[#73685B] hover:text-[#292722] p-1.5 rounded-xl hover:bg-[#E8DFD3] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -95,15 +95,15 @@ export const ManualEntryModal: React.FC<ManualEntryModalProps> = ({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
           {error && (
-            <div className="p-3 bg-rose-950/60 border border-rose-800 text-rose-300 rounded-xl text-xs flex items-center gap-2">
+            <div className="p-3 bg-[#FCEEEE] border border-[#F0C4C4] text-[#942F2F] rounded-md text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
-              Opportunity Title <span className="text-rose-400">*</span>
+            <label className="block text-xs font-semibold text-[#292722] mb-1">
+              Opportunity Title <span className="text-[#942F2F]">*</span>
             </label>
             <input
               type="text"
@@ -111,14 +111,14 @@ export const ManualEntryModal: React.FC<ManualEntryModalProps> = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Machine Learning Engineering Intern (Summer 2026)"
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+              className="w-full bg-[#FAF7F2] border border-[#D9CFC2] rounded-md px-3 py-2 text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D]"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
-                Company / Organization <span className="text-rose-400">*</span>
+              <label className="block text-xs font-semibold text-[#292722] mb-1">
+                Company / Organization <span className="text-[#942F2F]">*</span>
               </label>
               <input
                 type="text"
@@ -126,16 +126,16 @@ export const ManualEntryModal: React.FC<ManualEntryModalProps> = ({
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="e.g. OpenAI / Google / Cohere"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                className="w-full bg-[#FAF7F2] border border-[#D9CFC2] rounded-md px-3 py-2 text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Work Mode</label>
+              <label className="block text-xs font-semibold text-[#292722] mb-1">Work Mode</label>
               <select
                 value={workMode}
                 onChange={(e) => setWorkMode(e.target.value as WorkMode)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
+                className="w-full bg-[#FAF7F2] border border-[#D9CFC2] rounded-md px-3 py-2 text-xs text-[#292722] focus:outline-none focus:border-[#B49A7D]"
               >
                 <option value="remote">Remote</option>
                 <option value="hybrid">Hybrid</option>
@@ -146,32 +146,32 @@ export const ManualEntryModal: React.FC<ManualEntryModalProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Location</label>
+              <label className="block text-xs font-semibold text-[#292722] mb-1">Location</label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. San Francisco, CA or Remote"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                className="w-full bg-[#FAF7F2] border border-[#D9CFC2] rounded-md px-3 py-2 text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-[#292722] mb-1">
                 Application Deadline
               </label>
               <input
                 type="date"
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
+                className="w-full bg-[#FAF7F2] border border-[#D9CFC2] rounded-md px-3 py-2 text-xs text-[#292722] focus:outline-none focus:border-[#B49A7D]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
-              Official Application URL <span className="text-rose-400">*</span>
+            <label className="block text-xs font-semibold text-[#292722] mb-1">
+              Official Application URL <span className="text-[#942F2F]">*</span>
             </label>
             <input
               type="url"
@@ -179,15 +179,15 @@ export const ManualEntryModal: React.FC<ManualEntryModalProps> = ({
               value={postingUrl}
               onChange={(e) => setPostingUrl(e.target.value)}
               placeholder="https://careers.company.com/jobs/..."
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+              className="w-full bg-[#FAF7F2] border border-[#D9CFC2] rounded-md px-3 py-2 text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D]"
             />
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[11px] text-[#73685B] mt-1">
               Direct link to Greenhouse, Lever, Workday or company careers portal.
             </p>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
+            <label className="block text-xs font-semibold text-[#292722] mb-1">
               Required Skills (comma separated)
             </label>
             <input
@@ -195,12 +195,12 @@ export const ManualEntryModal: React.FC<ManualEntryModalProps> = ({
               value={skillsInput}
               onChange={(e) => setSkillsInput(e.target.value)}
               placeholder="Python, PyTorch, Transformers, SQL"
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+              className="w-full bg-[#FAF7F2] border border-[#D9CFC2] rounded-md px-3 py-2 text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
+            <label className="block text-xs font-semibold text-[#292722] mb-1">
               Personal Notes / Context
             </label>
             <textarea
@@ -208,25 +208,25 @@ export const ManualEntryModal: React.FC<ManualEntryModalProps> = ({
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
               placeholder="e.g. Reached out to university recruiter on LinkedIn; take-home OA expected..."
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+              className="w-full bg-[#FAF7F2] border border-[#D9CFC2] rounded-md px-3 py-2 text-xs text-[#292722] placeholder-[#73685B]/60 focus:outline-none focus:border-[#B49A7D]"
             />
           </div>
 
           {/* Actions */}
-          <div className="pt-2 flex items-center justify-end gap-3 border-t border-slate-800">
+          <div className="pt-2 flex items-center justify-end gap-3 border-t border-[#D9CFC2]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white rounded-xl transition-colors"
+              className="px-4 py-2 text-xs font-medium text-[#73685B] hover:text-[#292722] rounded transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white text-xs font-semibold rounded-xl transition-colors shadow-md shadow-blue-600/20"
+              className="inline-flex items-center px-4 py-2 bg-[#292722] hover:bg-[#3D3A33] disabled:opacity-50 text-[#FAF7F2] text-xs font-medium rounded-md transition-colors"
             >
-              <Plus className="w-4 h-4 mr-1.5" />
+              <Plus className="w-3.5 h-3.5 mr-1.5" />
               {isSubmitting ? 'Evaluating...' : 'Save Opportunity'}
             </button>
           </div>
